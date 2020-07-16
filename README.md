@@ -26,3 +26,18 @@
 - github.com에 개인 저장소(bitcamp-workspace) 생성
 - github.com에 로컬 저장소를 업로드(push)
 - 수업 관련 저장소를 로컬로 다운로드(clone) 
+- 자바 기본 프로그래밍 학습 프로젝트 생성
+    - bitcamp-java-basic 폴더 생성
+    - > gradle init 실행하여 프로젝트 폴더를 초기화시킨다.
+- 실습
+    - src/main/java/Hello2.java
+    - src/main/java/com/eomcs/basic 폴더 생성
+    - src/main/java/com/eomcs/basic/Hello2.java  생성
+
+## 4일차
+
+- 소스 파일과 클래스 블록, 클래스 파일의 관계
+    - com.eomcs.basic.ex01 패키지의 예제
+- 주석 종류와 사용법
+    - com.eomcs.basic.ex02 패키지 예제
+- 자바 언오로 갑을 표현하는 문법(Literal)
