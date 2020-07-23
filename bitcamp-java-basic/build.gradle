@@ -4,6 +4,9 @@ plugins {
     id 'java'
 
     id 'application'
+
+      //eclipse ide 설정 파일을 생성할 때 사용할 도구(플러그인) 추가
+    id 'eclipse'
 }
 
 repositories {
