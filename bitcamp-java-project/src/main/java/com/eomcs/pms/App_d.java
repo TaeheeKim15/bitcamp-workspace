@@ -9,9 +9,9 @@ import java.util.Scanner;
 // - 필요한 만큼만 입력 받고 출력하고 싶다.
 // 3) 배열을 사용하여 여러 개의 값을 다루기
 //- 배열을 사용하면 간단하게 여러 개의 변수를 선언할 수 있다.
-// 4) 반복문을 사용하여 여러개의 값을 다루기
+//- 반복문을 사용하여 여러개의 값을 다루기
 //- 반복문을 사용하면 같은 코드를 중복해서 작성할 필요가 없다
-public class App {
+public class App_d {
 
   public static void main(String[] args) {
 
