@@ -5,35 +5,41 @@ import java.sql.Date;
 public class App3 {
 
   public static void main(String[] args) {
+    class Task {
+      String project;
+      int no;
+      String content;
+      Date endDate;
+      String state;
+      String worker;
+    }
 
     java.util.Scanner keyInput = new java.util.Scanner(System.in);
 
     final int LENGTH = 4;
-    String[] project = new String[LENGTH];
-    int[] no = new int[LENGTH];
-    String[] content = new String[LENGTH];
-    Date[] endDate = new Date[LENGTH];
-    String[] state = new String[LENGTH];
-    String[] worker = new String[LENGTH];
+    Task[] task = new Task[LENGTH];
 
+    long currentMillis = 0;
     int count = 0;
 
     for (int i = 0; i < LENGTH; i++) {
       count++;
 
+      Task t = new Task();
+
       System.out.printf("[%s]\n", "작업");
       System.out.print("프로젝트? ");
-      project[i] = keyInput.nextLine();
+      t.project = keyInput.nextLine();
 
       System.out.print("번호? ");
-      no[i] = keyInput.nextInt();
+      t.no = keyInput.nextInt();
       keyInput.nextLine();
 
       System.out.print("내용? ");
-      content[i] = keyInput.nextLine();
+      t.content = keyInput.nextLine();
 
       System.out.print("완료일? ");
-      endDate[i] = Date.valueOf(keyInput.nextLine());
+      t.endDate = Date.valueOf(keyInput.nextLine());
 
 
       System.out.print("상태? ");
@@ -42,24 +48,26 @@ public class App3 {
       System.out.println("2: 완료");
       System.out.println("> ");
 
-      state[i] = keyInput.nextLine();
+      t.state = keyInput.nextLine();
 
-        switch (state[i]) {
+        switch (t.state) {
           case "0":
-            state[i] = "신규";
+            t.state = "신규";
             break;
           case "1":
-            state[i] = "진행중";
+            t.state = "진행중";
             break;
           default:
-            state[i] = "완료";
+            t.state = "완료";
         }
 
 
 
       System.out.print("담당자? ");
-      worker[i] = keyInput.nextLine();
+      t.worker = keyInput.nextLine();
       System.out.println();
+
+      task[i] = t;
 
       System.out.println("계속 입력하시겠습니까?(y/N) ");
       String response = keyInput.nextLine();
@@ -79,20 +87,15 @@ public class App3 {
      System.out.println("프로젝트");
 
      for(int i = 0; i < count; i++) {
-       System.out.printf("%d, %s, %s, %s, %s\n", no[i], content[i], endDate[i].toString(),
-           state[i], worker[i] );
+       Task t = task[i];
+       System.out.printf("%d, %s, %s, %s, %s\n",
+           t.no,
+           t.content,
+           t.endDate.toString(),
+           t.state,
+           t.worker );
 
        keyInput.close();
-
-
-//    if (state.equals("0")) {
-//      System.out.println("신규");
-//    } else if (state.equals("1")) {
-//      System.out.println("진행중");
-//    } else {
-//      System.out.println("완료");
-//    }
-//    System.out.printf("담당자: %s\n", worker);
 
     }
 

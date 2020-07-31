@@ -4,18 +4,19 @@ package com.eomcs.pms;
 import java.sql.Date;
 import java.util.Scanner;
 
-// 1) 낱개의 변수를 사용하여 여러 회원 정보 처리하기
-// 2) 조건문을 사용하여 입출력 제어하기
-// - 필요한 만큼만 입력 받고 출력하고 싶다.
-// 3) 배열을 사용하여 여러 개의 값을 다루기
-//- 배열을 사용하면 간단하게 여러 개의 변수를 선언할 수 있다.
-// 4) 반복문을 사용하여 여러개의 값을 다루기
-//- 반복문을 사용하면 같은 코드를 중복해서 작성할 필요가 없다
+// 1) 회원의 번호, 이름, 이메일, 암호, 사진, 전화번호, 등록일을 담을 수 있는
+//    메모리를 설계한다. => Member 클래스 정의
+// 2) Member 클래스의 레퍼런스 배열을 만들어 Member의 인스턴스를 보관한다.
+// 3) 레퍼런스 배열을 사용하여 인스턴스를 다루기 보다는
+//    낱개의 레퍼런스를 만들어인스턴스를 다루는 것이 더
+//    간결하다
 public class App {
 
   public static void main(String[] args) {
 
-
+    // 값을 담기 위해 메모리를 준비할 때
+    // 어떤 종류의 메모리를 준비해야 하는지 설계도를 작성한다.
+    // => 이것을 "클래스 정의"라고 부른다.
     class Member {
       int no;
       String name;
@@ -23,24 +24,23 @@ public class App {
       String password;
       String photo;
       String tel;
-      Date now;
+      Date createdDate;
     }
 
+    // Member 인스턴스의 주소를 담을 레퍼런스 배열을 준비한다.
     final int LENGTH = 100;
-    Member[] members = new Member[LENGTH];
+    Member[] members = new Member[LENGTH]; // [ , , , , ]
+
 
     Scanner keyInput = new Scanner(System.in);
 
     System.out.println("[회원]");
 
-    // 최대 5명의 회원 정보를 입력 받는 변수를 선언
-
     long currentMillis = 0;
     int count = 0;
 
-
-    for (int i = 0; i < 5; i++) {
-      count = count + 1;
+    for (int i = 0; i < LENGTH; i++) {
+      count++;
 
       Member m = new Member();
 
@@ -63,17 +63,19 @@ public class App {
       System.out.print("전화? ");
       m.tel = keyInput.nextLine();
 
+
       currentMillis = System.currentTimeMillis(); // 1970-1-1 00:00:00 에서경과된 밀리초
-      m.now = new Date(currentMillis);
+      m.createdDate = new Date(currentMillis);
       System.out.println();
 
       members[i] = m;
+
 
       System.out.print("계속 입력하시겠습니까?(y/N) ");
       String response = keyInput.nextLine();
 
       if (response.equalsIgnoreCase("y") == false) {
-        break; // 반복문을 멈춰라
+        break; // 반복문을 멈춰라.
       }
     }
 
@@ -83,16 +85,14 @@ public class App {
 
     for (int i = 0; i < count; i++) {
       Member m = members[i];
-
-    System.out.printf("%d, %s, %s, %s, %s\n",
-        m.no,
-        m.name,
-        m.email,
-        m.tel,
-        m.now.toString());
-
-
+      System.out.printf("%d, %s, %s, %s, %s\n",
+          m.no,
+          m.name,
+          m.email,
+          m.tel,
+          m.createdDate.toString());
     }
+
   }
 }
 
