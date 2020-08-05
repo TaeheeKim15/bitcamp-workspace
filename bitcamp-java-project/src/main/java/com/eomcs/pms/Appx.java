@@ -3,7 +3,15 @@ package com.eomcs.pms;
 import java.sql.Date;
 import java.util.Scanner;
 
-public class App {
+// 1)  회원 데이터를 입력하는 코드를 메서드로 분리한다
+// 2)  회원 데이터 목록을 출력하는 코드를 메서드로 분리한다
+// 3)  프로젝트 데이터를 입력하는 코드를 메서드로 분리한다
+// 4)  프로젝트 데이터 목록을 출력하는 코드를 메서드로 분리한다
+// 5)  작업 데이터를 입력하는 코드를 메서드로 분리한다
+// 6)  작업 데이터 목록을 출력하는 코드를 메서드로 분리한다
+// 7)  사용자로부터 입력 받는 코드를 메서드로 분리한다
+public class Appx {
+
   static Scanner keyInput = new Scanner(System.in);
 
   // 회원
@@ -15,7 +23,6 @@ public class App {
   static String[] photo = new String[LENGTH];
   static String[] tel = new String[LENGTH];
   static Date[] now = new Date[LENGTH];
-  static long currentMillis = 0;
   static int count = 0;
 
   // 프로젝트
@@ -39,7 +46,6 @@ public class App {
   static Date[] tendDate = new Date[TLENGTH];
   static String[] tstate = new String[TLENGTH];
   static String[] tworker = new String[TLENGTH];
-
   static int tcount = 0;
 
   public static void main(String[] args) {
@@ -49,12 +55,12 @@ public class App {
 
     loop:
       while (true) {
-        System.out.print("명령> ");
-        String command = keyInput.nextLine();
+        String command = promptString("명령> ");
 
         switch (command.toLowerCase()) {
           case "/member/add":
-            addMember();
+            addMember(); // addMember()에 따로 빼낸 코드를 실행하라.
+            // 이걸 메서드 호출이라고 한다.
             break;
           case "/member/list":
             listMember();
@@ -73,7 +79,10 @@ public class App {
 
           case "/task/list":
             listTask();
+
+
             break;
+
           case "exit":
           case "quit":
             System.out.println("안녕!");
@@ -86,39 +95,11 @@ public class App {
 
       }
 
-    keyInput.close();
+  keyInput.close();
 
-    System.out.println("종료!");
+  System.out.println("종료!");
   }
 
-
-
-  static void addMember() {
-    System.out.println("[회원등록]");
-
-    String input = Integer.parseINt(prompt("번호? "));
-    no[count] = Integer.parseInt(input);
-
-    System.out.print("이름? ");
-    name[count] = keyInput.nextLine();
-
-    System.out.print("이메일? ");
-    email[count] = keyInput.nextLine();
-
-    System.out.print("암호? ");
-    password[count] = keyInput.nextLine();
-
-    System.out.print("사진? ");
-    photo[count] = keyInput.nextLine();
-
-    System.out.print("전화? ");
-    tel[count] = keyInput.nextLine();
-
-    currentMillis = System.currentTimeMillis(); // 1970-1-1 00:00:00 에서경과된 밀리초
-    now[count] = new Date(currentMillis);
-
-    count++;
-  }
 
   static void listMember() {
     System.out.println("[회원 목록]");
@@ -129,33 +110,43 @@ public class App {
     }
   }
 
-  static void addProject() {
 
+  static void addMember() {
+    System.out.println("[회원등록]");
+
+    /*
+    String input = prompt("번호? ");
+    no[count] = Integer.parseInt(input);
+     */
+
+    no[count] = promptInt("번호? ");
+    name[count] = promptString("이름? ");
+    email[count] = promptString("이메일? ");
+    password[count] = promptString("암호? ");
+    photo[count] = promptString("사진? ");
+    tel[count] = promptString("전화? ");
+    now[count] = new Date(System.currentTimeMillis());
+
+    count++;
+  }
+
+  static void addProject() {
     System.out.println("[프로젝트 등록]");
 
-    System.out.print("번호? ");
-    pno[pcount] = keyInput.nextInt();
-    // 숫자만 나타내고 싶다면 int
-    keyInput.nextLine();
+    pno[pcount] = promptInt("번호? ");
 
-    System.out.print("프로젝트명? ");
-    ptitle[pcount] = keyInput.nextLine();
+    ptitle[pcount] = promptString("프로젝트명? ");
 
-    System.out.print("내용: ");
-    pcontent[pcount] = keyInput.nextLine();
+    pcontent[pcount] = promptString("내용: ");
 
-    System.out.print("시작일? ");
-    pstartDate[pcount] = java.sql.Date.valueOf(keyInput.nextLine());
+    pstartDate[pcount] = promptDate("시작일? ");
 
 
-    System.out.print("종료일? ");
-    pendDate[pcount] =java.sql.Date.valueOf(keyInput.nextLine());
+    pendDate[pcount] = promptDate("종료일? ");
 
-    System.out.print("만든이? ");
-    powner[pcount] = keyInput.nextLine();
+    powner[pcount] = promptString("만든이? ");
 
-    System.out.println("팀원: ");
-    pmember[pcount] = keyInput.nextLine();
+    pmember[pcount] = promptString("팀원: ");
 
     pcount++;
 
@@ -168,51 +159,24 @@ public class App {
       System.out.printf("%d, %s, %s, %s, %s\n",
           pno[i], ptitle[i], pstartDate[i], pendDate[i], powner[i]);
     }
-
   }
 
   static void addTask() {
     System.out.println("[작업 등록]");
 
 
-    System.out.print("번호? ");
-    tno[tcount] = keyInput.nextInt();
-    keyInput.nextLine();
+    tno[tcount] = promptInt("번호? ");
 
-    System.out.print("내용? ");
-    tcontent[tcount] = keyInput.nextLine();
+    tcontent[tcount] = promptString("내용? ");
 
-    System.out.print("완료일? ");
-    tendDate[tcount] = Date.valueOf(keyInput.nextLine());
+    tendDate[tcount] = promptDate("완료일? ");
 
+    tstate[tcount] = promptString("상태?\n0: 신규\n1: 진행중\n2: 완료\n> ");
 
-    System.out.println("상태? ");
-    System.out.println("0: 신규");
-    System.out.println("1: 진행중");
-    System.out.println("2: 완료");
-    System.out.println("> ");
+    tworker[tcount] = promptString("담당자? ");
 
-    tstate[tcount] = keyInput.nextLine();
-
-    switch (tstate[tcount]) {
-      case "0":
-        tstate[tcount] = "신규";
-        break;
-      case "1":
-        tstate[tcount] = "진행중";
-        break;
-      default:
-        tstate[tcount] = "완료";
-    }
-
-
-
-    System.out.print("담당자? ");
-    tworker[tcount] = keyInput.nextLine();
-    System.out.println();
 
     tcount++;
-
   }
 
   static void listTask() {
@@ -225,23 +189,22 @@ public class App {
   }
 
   static String promptString(String title) {
-    System.out.println(title);
+    System.out.print(title);
     return keyInput.nextLine();
   }
 
-  static int promptInt() {
-    System.out.println("명령> ");
-    return keyInput.nextLine();
-  }
-
-  static Date promptDate() {
-    System.out.println("명령> ");
-    return keyInput.nextLine();
+  static int promptInt(String title) {
+    return Integer.parseInt(promptString(title));
   }
 
 
+
+  static Date promptDate(String title) {
+    return Date.valueOf(promptString(title));
+  }
 }
 
+  // prompt 작업 실행 후 -> String
 
 
 

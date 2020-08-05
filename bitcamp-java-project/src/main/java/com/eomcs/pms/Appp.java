@@ -3,7 +3,7 @@ package com.eomcs.pms;
 import java.sql.Date;
 import java.util.Scanner;
 
-public class App {
+public class Appp {
   static Scanner keyInput = new Scanner(System.in);
 
   // 회원
@@ -96,7 +96,7 @@ public class App {
   static void addMember() {
     System.out.println("[회원등록]");
 
-    String input = Integer.parseINt(prompt("번호? "));
+    String input = Integer.parseInt(prompt("번호? "));
     no[count] = Integer.parseInt(input);
 
     System.out.print("이름? ");

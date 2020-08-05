@@ -22,7 +22,16 @@ public class Exam0330 {
   }
 
   public static void main(String[] args) {
-    //MyObject 설계도에 따라
+    //MyObject 설계도에 따라 int a와 int b 메모리를 만든다.
+    //그리고 그 메모리(인스턴스=객체)의 주소를 ref 변수에 저장한다.
+    MyObject ref = new MyObject();
+    ref.a = 100;
+    ref.b = 200;
+
+    // a, b 변수가 들어 있는 인스턴스(객체=메모리)의 주소를
+    // swap()에 넘긴다. => 그래서 "call by reference"인 것이다.
+    swap(ref);
+    System.out.printf("main(): a=%d, b=%d\n", ref.a, ref.b);
   }
 
 
