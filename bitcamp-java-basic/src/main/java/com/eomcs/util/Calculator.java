@@ -4,6 +4,7 @@ package com.eomcs.util;
 public class Calculator {
 
   public int result = 0;
+  // 개별적으로 관리하려고
 
   public  void plus(int value) {
     this.result += value;
