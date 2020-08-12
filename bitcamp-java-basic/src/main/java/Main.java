@@ -6,30 +6,16 @@ public class Main {
   Scanner m = new Scanner(System.in);
 
 
+  while (true) {
+    int A = m.nextInt();
+    int B = m.nextInt();
 
-  int A = m.nextInt();
-  int B = m.nextInt();
-  for (;A + B >= 0;) {
-
-      System.out.println( A+B);
-break;
-    if (A+B == 0)
-      System.out.println("");
-    }
+    System.out.println(A+B);
 
 
-
-  m.close();
   }
+  }
+
 
       }
 
-
-
-
-/*
- *  Scanner keyScan = new Scanner(System.in);
-
-    int i = keyScan.nextInt();
- *
- */

@@ -1,0 +1,17 @@
+// 오버라이딩 - this와 super로 메서드를 호출하는 원리
+package com.eomcs.oop.ex06.c1;
+
+public class Exam0420 {
+  public static void main(String[] args) {
+    X4 obj = new X4();
+    obj.test();
+  }
+
+}
+
+
+//this.메서드() 호출?
+//=> 현재 클래스부터 호출할 메서드를 찾아 올라간다.
+//
+//super.메서드() 호출?
+//=> 부모 클래스부터 호출할 메서드를 찾아 올라간다.
