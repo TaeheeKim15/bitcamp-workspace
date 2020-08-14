@@ -1,8 +1,8 @@
 // 캡슐화(encapsulation) - 접근 범위 테스트
-package com.eomcs.oop.ex07.b;
+package com.eomcs.oop.ex071.b;
 
-import com.eomcs.oop.ex07.b.sub.B;
-import com.eomcs.oop.ex07.b.sub.C;
+import com.eomcs.oop.ex071.b.sub.B;
+import com.eomcs.oop.ex071.b.sub.C;
 
 public class Exam0210 extends C {
 
@@ -23,7 +23,8 @@ public class Exam0210 extends C {
     obj2.publicVar = 100; // OK! 모두 다 접근 가능.
 
 
-    C obj3 = new C();
+    C obj3;
+    obj3 = new C();
 
     //obj3.privateVar = 100; // 접근 불가! 오직 그 클래스 안에서만 사용 가능.
     //obj3.defaultVar = 100; // 접근 불가! 같은 패키지까지만 접근 가능.
@@ -38,6 +39,9 @@ public class Exam0210 extends C {
     obj4.protectedVar = 100; // OK! Exam02_1는 C의 자식 클래스이며,
     // 또한 C로부터 상속 받아서 만든 자기 변수이다.
     obj4.publicVar = 100;
+
+//    Exam0210 p = new Exam0210();
+//    p.m3();
   }
 
   void m1(C obj) {
@@ -48,8 +52,8 @@ public class Exam0210 extends C {
   }
 
   void m2(Exam0210 obj) {
-//    obj.privateVar = 100;
-//    obj.defaultVar = 100;
+    //obj.privateVar = 100;
+    //obj.defaultVar = 100;
     obj.protectedVar = 100;
     obj.publicVar = 100;
   }
