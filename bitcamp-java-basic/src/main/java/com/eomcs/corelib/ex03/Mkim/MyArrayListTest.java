@@ -1,23 +1,27 @@
-package com.eomcs.corelib.ex03.Meom;
+package com.eomcs.corelib.ex03.Mkim;
+
+import com.eomcs.corelib.ex03.trash.MyArrayList;
 
 public class MyArrayListTest {
 
   public static void main(String[] args) {
+
     MyArrayList.add("aaa"); // aaa
-    MyArrayList.add("bbb"); // aaa,bbb
-    MyArrayList.add("ccc"); // aaa,bbb,ccc
+    MyArrayList.add("bbb"); // aaa, bbb
+    MyArrayList.add("ccc"); // aaa, bbb, ccc
     print();
 
-    MyArrayList.add(1, "xxx"); // aaa,xxx,bbb,ccc
+    MyArrayList.add(1, "xxx"); // aaa, xxx, bbb, ccc
     print();
 
-    Object old = MyArrayList.set(2, "yyy"); // aaa,xxx,yyy,ccc
+    Object old = MyArrayList.set(2,  "yyy"); // aaa,xxx,yyy,ccc
     print();
     System.out.println(old);
 
     old = MyArrayList.remove(1);
     print();
     System.out.println(old);
+
   }
 
   static void print() {
@@ -27,4 +31,5 @@ public class MyArrayListTest {
     }
     System.out.println();
   }
+
 }

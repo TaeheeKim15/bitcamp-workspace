@@ -19,7 +19,8 @@ package com.eomcs.corelib.ex03.trash;
 public class MyArrayList {
 
   static Object[] elementData = new Object[5];
-  static int size;
+  static int size = 5;
+
 
   static public boolean add(Object e) {
     if (size == elementData.length) {

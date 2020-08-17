@@ -1,4 +1,4 @@
-package com.eomcs.corelib.ex03.Meom;
+package com.eomcs.corelib.ex03;
 
 public class MyArrayListTest {
 
