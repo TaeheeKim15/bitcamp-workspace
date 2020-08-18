@@ -57,7 +57,7 @@ public static void main(String[] args) {
 }
 
 static void print(MyLinkedList list) {
-  for (int i = 0; i < list.size; i++) {
+  for (int i = 0; i < list.size(); i++) {
     System.out.print(list.get(i) + ",");
   }
   System.out.println();

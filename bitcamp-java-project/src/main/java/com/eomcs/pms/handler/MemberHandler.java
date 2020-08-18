@@ -51,4 +51,50 @@ public class MemberHandler {
           m.no, m.name, m.email, m.tel, m.registeredDate);
     }
   }
+
+  public static Member findByName(String name) {
+    for (int i = 0; i < size; i++) {
+      Member member  = list[i];
+      if (member.name.equals(name) ) {
+        return member;
+      }
+    }
+      return null;
+    }
 }
+
+// 이름이 다 다르다는 가정하에 하는 거예용
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

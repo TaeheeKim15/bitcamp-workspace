@@ -4,6 +4,9 @@ package com.eomcs.corelib.ex07;
 import java.util.ArrayList;
 
 // ArrayList는 중복을 허용한다.
+// 같은 인스턴스의 중복도 허용
+// = 같은 인스턴스를 여러개 넣을 수 있다는 말!
+
 public class Exam0121 {
   public static void main(String[] args) {
     String v1 = new String("aaa");

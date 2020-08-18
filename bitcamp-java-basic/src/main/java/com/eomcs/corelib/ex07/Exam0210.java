@@ -42,6 +42,24 @@ public class Exam0210 {
     System.out.println();
 
 
+    String t1 = new String("감자");
+    String t2 = new String("고구마");
+    String t3 = new String("토란");
+
+    HashSet kim = new HashSet();
+    kim.add(t1);
+    kim.add(t2);
+    kim.add(t3);
+
+    Iterator 구황작물 = kim.iterator();
+
+    // => 값을 꺼내주는 객체를 통해 값을 꺼낸다.
+    while (구황작물.hasNext()) {
+      // => 꺼낼 데이터가 있다면 값을 꺼내달라고 명령한다.
+      System.out.print(구황작물.next() + ", ");
+    }
+    System.out.println();
+
   }
 
 }

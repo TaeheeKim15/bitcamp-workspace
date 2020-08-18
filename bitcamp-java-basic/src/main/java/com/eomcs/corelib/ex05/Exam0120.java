@@ -13,22 +13,20 @@ public class Exam0120 {
     String s5 = new String("eee");
 
     Stack stack = new Stack();
-    stack.push(s1);
-    print(stack);
-    stack.push(s2);
-    print(stack);
-    stack.push(s3);
+    stack.push(s1); // aaa
+    stack.push(s2); // aaa, bbb
+    stack.push(s3); // aaa, bbb, ccc
     print(stack);
 
-    System.out.println("==>" + stack.pop()); // ccc
-    print(stack);
-    System.out.println("==>" + stack.pop()); // bbb
+    System.out.println("==> " + stack.pop()); // ccc
+    System.out.println("==> " + stack.pop()); // bbb
+    print(stack); // aaa
+
+    stack.push(s4); // aaa, ddd
+    stack.push(s5); // aaa, ddd, eee
     print(stack);
 
-    stack.push(s4);
-    print(stack);
-    stack.push(s5);
-    print(stack);
+    System.out.println("-----------");
 
     String value;
     while (stack.size() > 0) {
@@ -41,7 +39,7 @@ public class Exam0120 {
       System.out.print(list.get(i) + ", ");
     }
     System.out.println();
-  }    
+  }
 }
 
 
