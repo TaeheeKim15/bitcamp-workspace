@@ -5,7 +5,6 @@ import com.eomcs.util.Prompt;
 
 public class ProjectHandler {
 
-
   static class Project {
     int no;
     String title;
@@ -14,90 +13,77 @@ public class ProjectHandler {
     Date endDate;
     String owner;
     String members;
-    int size;
+  }
+  static final int LENGTH = 100;
+
+  Project[] list = new Project[LENGTH];
+  int size = 0;
+
+  // 외부에서 직접 이 변수를 사용하지 않기 때문에
+  // public 으로 공개한 것을 취소한다.
+  MemberHandler memberHandler;
+
+  // 인스턴스 변수들을 유효한 값으로 초기화시키는 생성자를 정의한다.
+  public ProjectHandler(MemberHandler memberHandler) {
+    this.memberHandler = memberHandler;
   }
 
-  static final int LENGTH = 100;
-  static Project[] list = new Project[LENGTH];
-  static int size = 0;
-
-  public static void add() {
+  public void add() {
     System.out.println("[프로젝트 등록]");
 
-    Project p = new Project();
-
-    p.no = Prompt.inputInt("번호? ");
-    p.title = Prompt.inputString("프로젝트명? ");
-    p.content = Prompt.inputString("내용? ");
-    p.startDate = Prompt.inputDate("시작일? ");
-    p.endDate = Prompt.inputDate("종료일? ");
+    Project project = new Project();
+    project.no = Prompt.inputInt("번호? ");
+    project.title = Prompt.inputString("프로젝트명? ");
+    project.content = Prompt.inputString("내용? ");
+    project.startDate = Prompt.inputDate("시작일? ");
+    project.endDate = Prompt.inputDate("종료일? ");
 
     while (true) {
-      String name = Prompt.inputString("만든이? (취소: 빈 문자열) ");
+      String name = Prompt.inputString("만든이?(취소: 빈 문자열) ");
+
       if (name.length() == 0) {
-        System.out.println("프로젝트 등록을 취소합니다");
+        System.out.println("프로젝트 등록을 취소합니다.");
         return;
-      } else if (MemberHandler.findByName(name) != null) {
-        p.owner = name;
+      } else if (memberHandler.findByName(name) != null) {
+        project.owner = name;
         break;
       }
 
-      System.out.println("등록된 회원이 아닙니다");
+      System.out.println("등록된 회원이 아닙니다.");
     }
 
-    // 엥 builder 쓰면 안되는 거 아님?
-    // 어차피 로컬변수라서 동시에 여러 쓰레드가 쓸 일이 없어
-    StringBuilder names = new StringBuilder();
-
+    StringBuilder members = new StringBuilder();
     while (true) {
-      String name = Prompt.inputString("팀원? (완료: 빈 문자열) ");
+      String name = Prompt.inputString("팀원?(완료: 빈 문자열) ");
 
       if (name.length() == 0) {
-        System.out.println("프로젝트 등록을 취소합니다");
         break;
-      } else if (MemberHandler.findByName(name) != null) {
-        if (names.length() > 0) {
-          names.append(",");
+      } else if (memberHandler.findByName(name) != null) {
+        if (members.length() > 0) {
+          members.append(",");
         }
-        names.append(name);
+        members.append(name);
       } else {
-        System.out.println("등록된 회원이 아닙니다");
+        System.out.println("등록된 회원이 아닙니다.");
       }
     }
+    project.members = members.toString();
 
-    p.members = names.toString();
-
-    list[size++] = p;
+    this.list[this.size++] = project;
   }
 
-  public static void list() {
+  public void list() {
     System.out.println("[프로젝트 목록]");
 
-    for (int i = 0; i < size; i++) {
-      Project p = list[i];
-      System.out.printf("%d, %s, %s, %s, %s, [%s]\n", // 출력 형식 지정
-          p.no, p.title, p.startDate, p.endDate, p.owner, p.members);
+    for (int i = 0; i < this.size; i++) {
+      Project project = this.list[i];
+      System.out.printf("%d, %s, %s, %s, %s, [%s]\n",
+          project.no,
+          project.title,
+          project.startDate,
+          project.endDate,
+          project.owner,
+          project.members);
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
