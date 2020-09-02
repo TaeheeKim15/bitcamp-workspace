@@ -5,22 +5,17 @@ import com.eomcs.pms.handler.MemberHandler;
 import com.eomcs.pms.handler.ProjectHandler;
 import com.eomcs.pms.handler.TaskHandler;
 import com.eomcs.util.Prompt;
+import com.eomcs.util.Stack;
 
 public class App {
 
   public static void main(String[] args) {
 
     BoardHandler boardHandler = new BoardHandler();
-    BoardHandler boardHandler2 = new BoardHandler();
-    BoardHandler boardHandler3 = new BoardHandler();
-    BoardHandler boardHandler4 = new BoardHandler();
-    BoardHandler boardHandler5 = new BoardHandler();
-    BoardHandler boardHandler6 = new BoardHandler();
-
     MemberHandler memberHandler = new MemberHandler();
-
     ProjectHandler projectHandler = new ProjectHandler(memberHandler);
     TaskHandler taskHandler = new TaskHandler(memberHandler);
+    Stack<String> commandStack = new Stack<>();
 
     loop:
       while (true) {
@@ -29,22 +24,24 @@ public class App {
         switch (command) {
           case "/member/add": memberHandler.add(); break;
           case "/member/list": memberHandler.list(); break;
+          case "/member/detail": memberHandler.detail(); break;
+          case "/member/update": memberHandler.update(); break;
+          case "/member/delete": memberHandler.delete(); break;
           case "/project/add": projectHandler.add(); break;
           case "/project/list": projectHandler.list(); break;
+          case "/project/detail": projectHandler.detail(); break;
+          case "/project/update": projectHandler.update(); break;
+          case "/project/delete": projectHandler.delete(); break;
           case "/task/add": taskHandler.add(); break;
           case "/task/list": taskHandler.list(); break;
+          case "/task/detail": taskHandler.detail(); break;
+          case "/task/update": taskHandler.update(); break;
+          case "/task/delete": taskHandler.delete(); break;
           case "/board/add": boardHandler.add(); break;
           case "/board/list": boardHandler.list(); break;
-          case "/board2/add": boardHandler2.add(); break;
-          case "/board2/list": boardHandler2.list(); break;
-          case "/board3/add": boardHandler3.add(); break;
-          case "/board3/list": boardHandler3.list(); break;
-          case "/board4/add": boardHandler4.add(); break;
-          case "/board4/list": boardHandler4.list(); break;
-          case "/board5/add": boardHandler5.add(); break;
-          case "/board5/list": boardHandler5.list(); break;
-          case "/board6/add": boardHandler6.add(); break;
-          case "/board6/list": boardHandler6.list(); break;
+          case "/board/detail": boardHandler.detail(); break;
+          case "/board/update": boardHandler.update(); break;
+          case "/board/delete": boardHandler.delete(); break;
           case "quit":
           case "exit":
             System.out.println("안녕!");
@@ -57,4 +54,30 @@ public class App {
 
     Prompt.close();
   }
+  
+  static void printCommandHistory(Stack<String> commandStack) {
+	  try {
+		  // 스택은 한번 pop() 하면 데이터가 제거된다
+		  // 따라서 복제본을 만들어 사용한다
+		  // 또한, clone() 메서드는 복제 작업 중 오류가 발생하면 예외를 발생시키기 때문에
+		  // try...catch... 블록으로 처리한다.
+		  Stack<String> history = command
+	  }
+  }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

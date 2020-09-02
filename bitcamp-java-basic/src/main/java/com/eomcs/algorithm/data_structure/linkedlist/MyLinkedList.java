@@ -1,5 +1,7 @@
 package com.eomcs.algorithm.data_structure.linkedlist;
 
+import java.lang.reflect.Array;
+
 //1) LinkedList 클래스 정의
 //2) 값을 담을 노드 클래스를 설계한다
 //3) 첫 번째 노드와 마지막 노드의 주소를 담을 필드를 추가한다
@@ -13,13 +15,19 @@ package com.eomcs.algorithm.data_structure.linkedlist;
 //9) 목록의 데이터를 새 배열에 담아 리턴하는 toArray() 메서드를 정의한다
 //10) 인스턴스 필드에 대해 캡슐화를 적용한다
 //   - 목록 크기를 리턴하는 size()를 추가로 정의한다
-public class MyLinkedList {
+
+// 테스트2: MyLinkedListTest2
+// 11) 제네릭을 적용한다.
+
+// 테스트3: MyLinkedListTest3
+// 12) 
+public class MyLinkedList<E> {
 
   // 값을 찾을 때는 첫번째 노드부터 따라간다
-  private Node first;
+  private Node<E> first;
 
   // 값을 추가할 때는 마지막 노드에 연결한다
-  private Node last;
+  private Node<E> last;
 
   // 목록 크기를 보관한다
  private int size;
@@ -29,19 +37,19 @@ public class MyLinkedList {
   // 스태틱 클래스?
   // - 여러 개의 MyLinkedList 객체가 공유하는 클래스이므로
   //   스태틱으로 Node 클래스를 설계한다.
-  static class Node {
-    Object value;
-    Node next;
+  static class Node<E> { // 컴파일러가 소스코드를 검증할때 쓰는 거임 
+    E value;
+    Node<E> next;
 
     public Node() {}
 
-    public Node(Object value) {
+    public Node(E value) {
       this.value = value;
     }
   }
 
-  public boolean add(Object e) {
-    Node node = new Node();
+  public boolean add(E e) {
+    Node<E> node = new Node<>();
     node.value = e;
 
     if (first == null) {
@@ -54,12 +62,12 @@ public class MyLinkedList {
     return true;
   }
 
-  public Object get(int index) {
+  public E get(int index) {
     if (index < 0 || index >= this.size ) {
       throw new IndexOutOfBoundsException("인덱스가 유효하지 않습니다.");
     }
 
-    Node cursor = this.first;
+    Node<E> cursor = this.first;
     for (int i = 1; i <= index; i++) {
       cursor = cursor.next;
     }
@@ -68,22 +76,23 @@ public class MyLinkedList {
   }
 
 
-  public void add(int index, Object element) {
-    if (index <0 || index > this.size) {
+  public void add(int index, E element) {
+    if (index < 0 || index > this.size) {
       throw new IndexOutOfBoundsException("인덱스가 유효하지 않습니다.");
     }
 
 
-    Node node = new Node(element);
+    Node<E> node = new Node<>(element);
 
     size++;
+    
     if (index == 0) {
       node.next = first;
       first = node;
       return;
     }
 
-    Node cursor = this.first;
+    Node<E> cursor = this.first;
     for (int i = 1; i <= index - 1; i++) {
       cursor = cursor.next;
     }
@@ -94,10 +103,9 @@ public class MyLinkedList {
     if (node.next == null) {
       last = node;
     }
-
   }
 
-  public Object remove(int index) {
+  public E remove(int index) {
     if (index < 0 || index >= this.size) {
       throw new IndexOutOfBoundsException("인덱스가 유효하지 않습니다.");
     }
@@ -105,17 +113,17 @@ public class MyLinkedList {
     size--;
 
     if (index == 0) {
-      Node old = first;
+      Node<E> old = first;
       first = old.next;
       old.next = null; // 가비지가 다른 인스턴스를 가리키지 않게 한다
       return old.value;
     }
 
-    Node cursor = this.first;
+    Node<E> cursor = this.first;
     for (int i = 1; i <= index - 1; i++) {
       cursor = cursor.next;
     }
-    Node old = cursor.next;
+    Node<E> old = cursor.next;
     cursor.next = old.next;
     old.next = null; // 가비지가 다른 인스턴스를 가리키지 않게 한다
 
@@ -127,17 +135,17 @@ public class MyLinkedList {
   }
 
 
-  public Object set(int index, Object element) {
+  public E set(int index, E element) {
     if (index < 0 || index >= this.size ) {
       throw new IndexOutOfBoundsException("인덱스가 유효하지 않습니다.");
     }
 
-    Node cursor = this.first;
+    Node<E> cursor = this.first;
     for (int i = 1; i <= index; i++) {
       cursor = cursor.next;
     }
 
-    Object old  = cursor.value;
+    E old  = cursor.value;
     cursor.value = element;
 
     return old;
@@ -150,7 +158,7 @@ public class MyLinkedList {
     Object[] arr = new Object[this.size];
 
     int i = 0;
-    Node cursor = first;
+    Node<E> cursor = first;
 
     while(cursor != null) {
       arr[i++] = cursor.value;
@@ -162,6 +170,29 @@ public class MyLinkedList {
 
   public int size() {
     return this.size;
+  }
+  
+  public E[] toArray(E[] arr) {
+	  if (arr.length < this.size()) {
+	      // => 다음과 같이 배열의 타입을 엄격히 형변환 해도 된다.
+	      //Class<E[]> arrayClassInfo = (Class<E[]>)arr.getClass();
+	      //Class<E> arrayItemClassInfo = (Class<E>)arrayClassInfo.getComponentType();
+
+	      // => 그러나 조회 용으로 사용할 거라면 굳이 리턴 값에 대해 제네릭 형변환을 엄격히 할 필요가 없다.
+	      Class<?> arrayClassInfo = arr.getClass();
+	      Class<?> arrayItemClassInfo = arrayClassInfo.getComponentType();
+
+	      arr = (E[]) Array.newInstance(arrayItemClassInfo, this.size());
+
+	      // => 그냥 다음과 같이 간략하게 표현하는 것이 코드를 읽기 쉽게 한다.
+	      //arr = (E[]) Array.newInstance(arr.getClass().getComponentType(), this.size());
+	    }
+	  
+	  Object[] originArr = this.toArray();
+	  for(int i = 0; i < this.size(); i ++) {
+		  arr[i] = (E) originArr[i];
+	  }
+	  return arr;
   }
 }
 
