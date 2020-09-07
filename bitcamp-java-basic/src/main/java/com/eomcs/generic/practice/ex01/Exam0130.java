@@ -1,3 +1,4 @@
+// 제네릭(Generic) - 여러 개의 타입 파라미터
 package com.eomcs.generic.practice.ex01;
 
 public class Exam0130 {

@@ -2,12 +2,15 @@ package com.eomcs.util;
 
 import java.util.Arrays;
 
-// ArrayList 가 다룰 객체의 타입을 파라미터로 받을 수 있도록 '타입 파라미터'를 선언한다. 
-public class ArrayList<E> {
+// List 를 상속 받기 때문에 
+// - size 필드는 제거한다.
+// - size() 메서드는 제거한다.
+// - 상속 받은 메서드를 구현한다.
+//
+public class ArrayList<E> extends AbstractList<E> {
 
   static final int DEFAULT_CAPACITY = 3;
   Object[] elementData;
-  int size = 0;
 
   public ArrayList() {
     elementData = new Object[DEFAULT_CAPACITY];
@@ -21,6 +24,7 @@ public class ArrayList<E> {
     }
   }
 
+  @Override
   public boolean add(E e) {
     if (size == elementData.length) {
       grow();
@@ -34,6 +38,7 @@ public class ArrayList<E> {
     elementData = Arrays.copyOf(elementData, newCapacity);
   }
 
+  @Override
   public void add(int index, E element) {
     if (size == elementData.length) {
       grow();
@@ -48,6 +53,7 @@ public class ArrayList<E> {
     size++;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E get(int index) {
     if (index < 0 || index >= size) {
@@ -56,6 +62,7 @@ public class ArrayList<E> {
     return (E) elementData[index];
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E set(int index, E element) {
     if (index < 0 || index >= size) {
@@ -66,6 +73,7 @@ public class ArrayList<E> {
     return (E) old;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E remove(int index) {
     Object old = elementData[index];
@@ -83,15 +91,13 @@ public class ArrayList<E> {
     return (E) old;
   }
 
-  public int size() {
-    return this.size;
-  }
-
+  @Override
   public Object[] toArray() {
     Object[] arr = Arrays.copyOf(elementData, this.size);
     return arr;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E[] toArray(E[] arr) {
     if (arr.length < this.size) {

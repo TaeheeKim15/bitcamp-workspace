@@ -4,44 +4,22 @@ package com.eomcs.generic.practice.ex01;
 import java.util.ArrayList;
 
 public class Exam0210 {
-
-	
-	static class A{}
-	static class B1 extends A{}
-	static class B2 extends A{}
-	static class C extends B1{}
-	  /*
-	   *   Object
-	   *     |
-	   *   A
-	   *    / \
-	   *  B1 B2
-	   *    |
-	   *   C
-	   */
-	
 	public static void main(String[] args) {
+		// 문법
+		// => 클래스명 옆에 다루고자 하는 타입의 이름을 지정한다
+		//    클래스명 <타입명>
+		ArrayList<Member> list = new ArrayList<Member>();
 		
-		ArrayList<A> list1;
+		// => 레퍼런스 선언에 제네릭 정보가 있다면 new 연산자에서는 생략할 수 있다
+		ArrayList<Member> list2 = new ArrayList</*Member*/>();
 		
-		list1 = new ArrayList(); // 이렇게 사용하지 말고, 명확히 제네릭의 타입을 지정하라
-	    // list1 = new ArrayList<object>(); // 컴파일 오류
-		list1 = new ArrayList();
-		list1 = new ArrayList<A>();
-		 //list1 = new ArrayList<B1>(); // 컴파일 오류!
-	    //list1 = new ArrayList<B2>(); // 컴파일 오류!
-	    //list1 = new ArrayList<C>(); // 컴파일 오류!
-
-		ArrayList<B2> list2;
+		ArrayList<Member> list3;
+		list3 = new ArrayList<>();
 		
-		list2 = new ArrayList(); // 이렇게 사용하지 말고, 명확히 제네릭의 타입을 지정하라
-		// list2 = new ArrayList<Object>(); // 컴파일 오류
-		list2 = new ArrayList<>();
-		  //list2 = new ArrayList<A>(); // 컴파일 오류!
-	    //list2 = new ArrayList<B1>(); // 컴파일 오류!
-		list2  = new ArrayList<B2>();
-		// list2 = new ArrayList<C>();
+		// 제네릭 문법으로 레퍼런스 변수를 선언할 때는 타입명을 생략할 수 없다
+		// ArrayList<> list4; // 컴파일 오류!
 	}
+
 }
 
 
