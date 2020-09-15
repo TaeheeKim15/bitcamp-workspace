@@ -1,119 +1,145 @@
 package com.eomcs.pms;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Date;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.Scanner;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.domain.Task;
-import com.eomcs.pms.handler.BoardHandler;
-import com.eomcs.pms.handler.MemberHandler;
-import com.eomcs.pms.handler.ProjectHandler;
-import com.eomcs.pms.handler.TaskHandler;
-import com.eomcs.util.ArrayList;
-import com.eomcs.util.LinkedList;
+import com.eomcs.pms.handler.BoardAddCommand;
+import com.eomcs.pms.handler.BoardDeleteCommand;
+import com.eomcs.pms.handler.BoardDetailCommand;
+import com.eomcs.pms.handler.BoardListCommand;
+import com.eomcs.pms.handler.BoardUpdateCommand;
+import com.eomcs.pms.handler.Command;
+import com.eomcs.pms.handler.HelloCommand;
+import com.eomcs.pms.handler.MemberAddCommand;
+import com.eomcs.pms.handler.MemberDeleteCommand;
+import com.eomcs.pms.handler.MemberDetailCommand;
+import com.eomcs.pms.handler.MemberListCommand;
+import com.eomcs.pms.handler.MemberUpdateCommand;
+import com.eomcs.pms.handler.ProjectAddCommand;
+import com.eomcs.pms.handler.ProjectDeleteCommand;
+import com.eomcs.pms.handler.ProjectDetailCommand;
+import com.eomcs.pms.handler.ProjectListCommand;
+import com.eomcs.pms.handler.ProjectUpdateCommand;
+import com.eomcs.pms.handler.TaskAddCommand;
+import com.eomcs.pms.handler.TaskDeleteCommand;
+import com.eomcs.pms.handler.TaskDetailCommand;
+import com.eomcs.pms.handler.TaskListCommand;
+import com.eomcs.pms.handler.TaskUpdateCommand;
 import com.eomcs.util.Prompt;
-import com.eomcs.util.Queue;
-import com.eomcs.util.Stack;
 
 public class App {
 
+  // 맵 객체에 커맨드 객체를 보관한다.
+  static List<Board> boardList = new ArrayList<>();
+
   public static void main(String[] args) {
 
-    // 단지 유지보수를 좋게 하기 위해 ArrayList와 LinkedList의 공통 분모를 뽑아서
-    // 만든 클래스가 List이다.
-    // List는 클래스는 실제 작업을 하는 클래스가 아니다.
-    // 그럼에도 불구하고 개발자가 다음과 같이 List 객체를 사용하려 한다면 막을 수 없다.
-    // => BoardHandler의 경우 아무런 작업을 수행하지 않을 것이다.
-    // => 왜? List 클래스에 정의된 메서드는 아무것도 하지 않는다.
-    //
-    //    List<Board> boardList = new List<>();
+    // 파일에서 데이터를 읽어 List 에 저장한다.
+    loadBoards();
 
-    // 해결책?
-    // => 이렇게 generalization을 통해 만든 클래스의 경우
-    //    서브 클래스에게 공통 분모를 물려주기 위한 용도로 사용된다.
-    // => 이런 류의 클래스는 직접 인스턴스를 생성하지 못하도록 해서
-    //    직접 사용하는 것을 막아야 한다.
-    // => 이런 용도로 사용하는 문법이 "추상 클래스(abstract class)"이다.
-    //
-    // List 클래스(AbstractList로 이름 변경함)를 추상 클래스로 만들면,
-    // 다음과 같이 인스턴스를 생성할 수 없다.
-    // 아예 인스턴스 생성을 원천적으로 차단하는 효과가 있다.
-    //
-    //    AbstractList<Board> boardList = new AbstractList<>(); // 컴파일 오류!
-    //
+    // 커맨드 객체를 저장할 맵 객체를 준비한다.
+    Map<String,Command> commandMap = new HashMap<>();
 
-    // 받드시 AbstractList의 일반 하위 객체를 정의해야 한다.
-    //
-    ArrayList<Board> boardList = new ArrayList<>();
-    BoardHandler boardHandler = new BoardHandler(boardList);
+    commandMap.put("/board/add", new BoardAddCommand(boardList));
+    commandMap.put("/board/list", new BoardListCommand(boardList));
+    commandMap.put("/board/detail", new BoardDetailCommand(boardList));
+    commandMap.put("/board/update", new BoardUpdateCommand(boardList));
+    commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
 
-    LinkedList<Member> memberList = new LinkedList<>();
-    MemberHandler memberHandler = new MemberHandler(memberList);
+    List<Member> memberList = new LinkedList<>();
+    MemberListCommand memberListCommand = new MemberListCommand(memberList);
+    commandMap.put("/member/add", new MemberAddCommand(memberList));
+    commandMap.put("/member/list", memberListCommand);
+    commandMap.put("/member/detail", new MemberDetailCommand(memberList));
+    commandMap.put("/member/update", new MemberUpdateCommand(memberList));
+    commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
 
-    LinkedList<Project> projectList = new LinkedList<>();
-    ProjectHandler projectHandler = new ProjectHandler(projectList, memberHandler);
+    List<Project> projectList = new LinkedList<>();
+    commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
+    commandMap.put("/project/list", new ProjectListCommand(projectList));
+    commandMap.put("/project/detail", new ProjectDetailCommand(projectList));
+    commandMap.put("/project/update", new ProjectUpdateCommand(projectList, memberListCommand));
+    commandMap.put("/project/delete", new ProjectDeleteCommand(projectList));
 
-    ArrayList<Task> taskList = new ArrayList<>();
-    TaskHandler taskHandler = new TaskHandler(taskList, memberHandler);
+    List<Task> taskList = new ArrayList<>();
+    commandMap.put("/task/add", new TaskAddCommand(taskList, memberListCommand));
+    commandMap.put("/task/list", new TaskListCommand(taskList));
+    commandMap.put("/task/detail", new TaskDetailCommand(taskList));
+    commandMap.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
+    commandMap.put("/task/delete", new TaskDeleteCommand(taskList));
 
-    Stack<String> commandStack = new Stack<>();
-    Queue<String> commandQueue = new Queue<>();
+    commandMap.put("/hello", new HelloCommand());
+
+    // 자바에서는 stack 알고리즘(LIFO)에 대한 인터페이스로 Deque 를 제공한다.
+    Deque<String> commandStack = new ArrayDeque<>();
+
+    // 자바에서 제공하는 LinkedList 클래스는 Queue 구현체이기도 하다.
+    Queue<String> commandQueue = new LinkedList<>();
 
     loop:
       while (true) {
-        String command = Prompt.inputString("명령> ");
+        String inputStr = Prompt.inputString("명령> ");
+
+        if (inputStr.length() == 0) {
+          continue;
+        }
 
         // 사용자가 입력한 명령을 보관한다.
-        commandStack.push(command);
-        commandQueue.offer(command);
+        commandStack.push(inputStr);
+        commandQueue.offer(inputStr);
 
-        switch (command) {
-          case "/member/add": memberHandler.add(); break;
-          case "/member/list": memberHandler.list(); break;
-          case "/member/detail": memberHandler.detail(); break;
-          case "/member/update": memberHandler.update(); break;
-          case "/member/delete": memberHandler.delete(); break;
-          case "/project/add": projectHandler.add(); break;
-          case "/project/list": projectHandler.list(); break;
-          case "/project/detail": projectHandler.detail(); break;
-          case "/project/update": projectHandler.update(); break;
-          case "/project/delete": projectHandler.delete(); break;
-          case "/task/add": taskHandler.add(); break;
-          case "/task/list": taskHandler.list(); break;
-          case "/task/detail": taskHandler.detail(); break;
-          case "/task/update": taskHandler.update(); break;
-          case "/task/delete": taskHandler.delete(); break;
-          case "/board/add": boardHandler.add(); break;
-          case "/board/list": boardHandler.list(); break;
-          case "/board/detail": boardHandler.detail(); break;
-          case "/board/update": boardHandler.update(); break;
-          case "/board/delete": boardHandler.delete(); break;
-          case "history": printCommandHistory(commandStack); break;
-          // history2 명령을 처리한다.
-          case "history2": printCommandHistory2(commandQueue); break;
+        switch (inputStr) {
+          case "history": printCommandHistory(commandStack.iterator()); break;
+          case "history2": printCommandHistory(commandQueue.iterator()); break;
           case "quit":
           case "exit":
             System.out.println("안녕!");
             break loop;
           default:
-            System.out.println("실행할 수 없는 명령입니다.");
+            Command command = commandMap.get(inputStr);
+            if (command != null) {
+              try {
+                command.execute();
+              } catch (Exception e) {
+                System.out.printf("명령 처리 중 오류 발생: %s\n%s\n",
+                    e.getClass().getName(),
+                    e.getMessage());
+              }
+            } else {
+              System.out.println("실행할 수 없는 명령입니다.");
+            }
         }
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
       }
 
     Prompt.close();
+
+    // 프로그램을 종료하기 전에 List 에 보관된 객체를 파일에 저장한다.
+    saveBoards();
   }
 
-  static void printCommandHistory(Stack<String> commandStack) {
+  static void printCommandHistory(Iterator<String> iterator) {
     try {
-      // 스택은 한 번 pop() 하면 데이터가 제거된다.
-      // 따라서 복제본을 만들어 사용한다.
-      // 또한 clone() 메서드는 복제 작업 중 오류가 발생하면 예외를 발생시키기 때문에
-      // try...catch... 블록으로 처리한다.
-      Stack<String> history = commandStack.clone();
-
       int count = 0;
-      while (!history.empty()) {
-        System.out.println(history.pop());
+      while (iterator.hasNext()) {
+        System.out.println(iterator.next());
         count++;
 
         // 5개 출력할 때 마다 계속 출력할지 묻는다.
@@ -126,26 +152,99 @@ public class App {
     }
   }
 
-  static void printCommandHistory2(Queue<String> commandQueue) {
+  static void saveBoards() {
+    System.out.println("[게시글 저장]");
+
+    // 데이터를 저장할 파일의 정보
+    File file = new File("./board.csv"); // 현재 폴더(.)은 프로젝트 폴더를 가리킨다.
+
+    FileWriter out = null;
     try {
-      // Queue는 한 번 poll() 하면 데이터가 제거된다.
-      // 따라서 복제본을 만들어 사용한다.
-      // 또한 clone() 메서드는 복제 작업 중 오류가 발생하면 예외를 발생시키기 때문에
-      // try...catch... 블록으로 처리한다.
-      Queue<String> history = commandQueue.clone();
+      // 데이터를 파일에 출력할 때 사용할 도구
+      out = new FileWriter(file);
 
-      int count = 0;
-      while (history.size() > 0) {
-        System.out.println(history.poll());
-        count++;
+      // 각각의 게시글 파일로 출력한다.
+      for (Board board : boardList) {
+        String record = String.format("%d,%s,%s,%s,%s,%d\n", 
+            board.getNo(),
+            board.getTitle(),
+            board.getContent(),
+            board.getWriter(),
+            board.getRegisteredDate().toString(),
+            board.getViewCount());
+        out.write(record); // 번호,제목,내용,작성자,작성일,조회수 CRLF
+      }
 
-        // 5개 출력할 때 마다 계속 출력할지 묻는다.
-        if ((count % 5) == 0 && Prompt.inputString(":").equalsIgnoreCase("q")) {
+    } catch (IOException e) {
+      System.out.println("파일 출력 작업 중에 오류 발생!");
+
+    } finally {
+      // 사용이 끝난 파일 출력 도구를 닫는다.
+      // => 이 과정에서 파일 출력 도구의 임시 메모리(버퍼)에 잔류하는 찌꺼기 데이터를 마무리로 완전히 출력한다.
+      try {
+        out.close();
+      } catch (Exception e) {
+        // close() 에서 오류가 발생할 때 마땅히 할 것이 없다.
+        // 그래서 그냥 무시한다.
+      }
+    }
+  }
+
+  static void loadBoards() {
+    System.out.println("[게시글 파일 로딩!]");
+
+    // 데이터를 읽어 올 파일의 정보
+    File file = new File("./board.csv"); // 현재 폴더(.)은 프로젝트 폴더를 가리킨다.
+
+    FileReader out = null;
+    Scanner scanner = null;
+    try {
+      // 파일에서 데이터를 읽을 때 사용할 도구
+      out = new FileReader(file);
+      scanner = new Scanner(out); // FileReader 객체에 플러그인을 꼽는다.
+
+      while (true) {
+        try {
+          // 파일에서 한 줄 읽는다.
+          String record = scanner.nextLine(); // "번호,제목,내용,작성자,등록일,조회수"
+
+          // CSV 문자열을 콤마(,)로 나눈다.
+          String[] values = record.split(",");
+
+          // 레코드 데이터를 저장할 객체를 준비
+          Board board = new Board();
+
+          // 레코드의 각 필드 값을 객체의 필드에 저장한다.
+          board.setNo(Integer.parseInt(values[0]));
+          board.setTitle(values[1]); // "20" ==> int
+          board.setContent(values[2]);
+          board.setWriter(values[3]);
+          board.setRegisteredDate(Date.valueOf(values[4])); // "yyyy-MM-dd" ==> java.sql.Date
+          board.setViewCount(Integer.parseInt(values[5]));
+
+          // 객체를 List 목록에 추가한다.
+          boardList.add(board);
+
+        } catch (NoSuchElementException e) {
           break;
         }
       }
-    } catch (Exception e) {
-      System.out.println("history2 명령 처리 중 오류 발생!");
+    } catch (IOException e) {
+      System.out.println("파일 읽기 작업 중에 오류 발생!");
+
+    } finally {
+      try {scanner.close();} catch (Exception e) {}
+      try {out.close();} catch (Exception e) {}
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
