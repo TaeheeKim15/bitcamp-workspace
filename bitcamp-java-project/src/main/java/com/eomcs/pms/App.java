@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Scanner;
+
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
@@ -46,198 +46,327 @@ import com.eomcs.util.Prompt;
 
 public class App {
 
-  // 맵 객체에 커맨드 객체를 보관한다.
-  static List<Board> boardList = new ArrayList<>();
+	// 맵 객체에 커맨드 객체를 보관한다.
+	static List<Board> boardList = new ArrayList<>();
+	static List<Member> memberList = new LinkedList<>();
+	static List<Project> projectList = new LinkedList<>();
+	static List<Task> taskList = new ArrayList<>();
 
-  public static void main(String[] args) {
+	// 데이터를 저장할 파일의 정보
+	static File boardFile = new File("./board.csv"); // 현재 폴더(.)은 프로젝트 폴더를 가리킨다.
+	static File memberFile = new File("./member.csv");
+	static File projectFile = new File("./project.csv");
+	static File taskFile = new File("./task.csv");
 
-    // 파일에서 데이터를 읽어 List 에 저장한다.
-    loadBoards();
+	public static void main(String[] args) {
 
-    // 커맨드 객체를 저장할 맵 객체를 준비한다.
-    Map<String,Command> commandMap = new HashMap<>();
+		// 파일에서 데이터를 읽어 List 에 저장한다.
+		loadBoards();
+		loadMembers();
+		loadProjects();
+		loadTasks();
 
-    commandMap.put("/board/add", new BoardAddCommand(boardList));
-    commandMap.put("/board/list", new BoardListCommand(boardList));
-    commandMap.put("/board/detail", new BoardDetailCommand(boardList));
-    commandMap.put("/board/update", new BoardUpdateCommand(boardList));
-    commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
+		// 커맨드 객체를 저장할 맵 객체를 준비한다.
+		Map<String,Command> commandMap = new HashMap<>();
 
-    List<Member> memberList = new LinkedList<>();
-    MemberListCommand memberListCommand = new MemberListCommand(memberList);
-    commandMap.put("/member/add", new MemberAddCommand(memberList));
-    commandMap.put("/member/list", memberListCommand);
-    commandMap.put("/member/detail", new MemberDetailCommand(memberList));
-    commandMap.put("/member/update", new MemberUpdateCommand(memberList));
-    commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
+		commandMap.put("/board/add", new BoardAddCommand(boardList));
+		commandMap.put("/board/list", new BoardListCommand(boardList));
+		commandMap.put("/board/detail", new BoardDetailCommand(boardList));
+		commandMap.put("/board/update", new BoardUpdateCommand(boardList));
+		commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
 
-    List<Project> projectList = new LinkedList<>();
-    commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
-    commandMap.put("/project/list", new ProjectListCommand(projectList));
-    commandMap.put("/project/detail", new ProjectDetailCommand(projectList));
-    commandMap.put("/project/update", new ProjectUpdateCommand(projectList, memberListCommand));
-    commandMap.put("/project/delete", new ProjectDeleteCommand(projectList));
+		MemberListCommand memberListCommand = new MemberListCommand(memberList);
+		commandMap.put("/member/add", new MemberAddCommand(memberList));
+		commandMap.put("/member/list", memberListCommand);
+		commandMap.put("/member/detail", new MemberDetailCommand(memberList));
+		commandMap.put("/member/update", new MemberUpdateCommand(memberList));
+		commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
 
-    List<Task> taskList = new ArrayList<>();
-    commandMap.put("/task/add", new TaskAddCommand(taskList, memberListCommand));
-    commandMap.put("/task/list", new TaskListCommand(taskList));
-    commandMap.put("/task/detail", new TaskDetailCommand(taskList));
-    commandMap.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
-    commandMap.put("/task/delete", new TaskDeleteCommand(taskList));
+		commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
+		commandMap.put("/project/list", new ProjectListCommand(projectList));
+		commandMap.put("/project/detail", new ProjectDetailCommand(projectList));
+		commandMap.put("/project/update", new ProjectUpdateCommand(projectList, memberListCommand));
+		commandMap.put("/project/delete", new ProjectDeleteCommand(projectList));
 
-    commandMap.put("/hello", new HelloCommand());
+		commandMap.put("/task/add", new TaskAddCommand(taskList, memberListCommand));
+		commandMap.put("/task/list", new TaskListCommand(taskList));
+		commandMap.put("/task/detail", new TaskDetailCommand(taskList));
+		commandMap.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
+		commandMap.put("/task/delete", new TaskDeleteCommand(taskList));
 
-    // 자바에서는 stack 알고리즘(LIFO)에 대한 인터페이스로 Deque 를 제공한다.
-    Deque<String> commandStack = new ArrayDeque<>();
+		commandMap.put("/hello", new HelloCommand());
 
-    // 자바에서 제공하는 LinkedList 클래스는 Queue 구현체이기도 하다.
-    Queue<String> commandQueue = new LinkedList<>();
+		// 자바에서는 stack 알고리즘(LIFO)에 대한 인터페이스로 Deque 를 제공한다.
+		Deque<String> commandStack = new ArrayDeque<>();
 
-    loop:
-      while (true) {
-        String inputStr = Prompt.inputString("명령> ");
+		// 자바에서 제공하는 LinkedList 클래스는 Queue 구현체이기도 하다.
+		Queue<String> commandQueue = new LinkedList<>();
 
-        if (inputStr.length() == 0) {
-          continue;
-        }
+		loop:
+			while (true) {
+				String inputStr = Prompt.inputString("명령> ");
 
-        // 사용자가 입력한 명령을 보관한다.
-        commandStack.push(inputStr);
-        commandQueue.offer(inputStr);
+				if (inputStr.length() == 0) {
+					continue;
+				}
 
-        switch (inputStr) {
-          case "history": printCommandHistory(commandStack.iterator()); break;
-          case "history2": printCommandHistory(commandQueue.iterator()); break;
-          case "quit":
-          case "exit":
-            System.out.println("안녕!");
-            break loop;
-          default:
-            Command command = commandMap.get(inputStr);
-            if (command != null) {
-              try {
-                command.execute();
-              } catch (Exception e) {
-                System.out.printf("명령 처리 중 오류 발생: %s\n%s\n",
-                    e.getClass().getName(),
-                    e.getMessage());
-              }
-            } else {
-              System.out.println("실행할 수 없는 명령입니다.");
-            }
-        }
-        System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
-      }
+				// 사용자가 입력한 명령을 보관한다.
+				commandStack.push(inputStr);
+				commandQueue.offer(inputStr);
 
-    Prompt.close();
+				switch (inputStr) {
+				case "history": printCommandHistory(commandStack.iterator()); break;
+				case "history2": printCommandHistory(commandQueue.iterator()); break;
+				case "quit":
+				case "exit":
+					System.out.println("안녕!");
+					break loop;
+				default:
+					Command command = commandMap.get(inputStr);
+					if (command != null) {
+						try {
+							command.execute();
+						} catch (Exception e) {
+							System.out.printf("명령 처리 중 오류 발생: %s\n%s\n",
+									e.getClass().getName(),
+									e.getMessage());
+						}
+					} else {
+						System.out.println("실행할 수 없는 명령입니다.");
+					}
+				}
+				System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
+			}
 
-    // 프로그램을 종료하기 전에 List 에 보관된 객체를 파일에 저장한다.
-    saveBoards();
-  }
+		Prompt.close();
 
-  static void printCommandHistory(Iterator<String> iterator) {
-    try {
-      int count = 0;
-      while (iterator.hasNext()) {
-        System.out.println(iterator.next());
-        count++;
+		// 프로그램을 종료하기 전에 List 에 보관된 객체를 파일에 저장한다.
+		saveBoards();
+		saveMembers();
+		saveProjects();
+		saveTasks();
+	}
 
-        // 5개 출력할 때 마다 계속 출력할지 묻는다.
-        if ((count % 5) == 0 && Prompt.inputString(":").equalsIgnoreCase("q")) {
-          break;
-        }
-      }
-    } catch (Exception e) {
-      System.out.println("history 명령 처리 중 오류 발생!");
-    }
-  }
+	static void printCommandHistory(Iterator<String> iterator) {
+		try {
+			int count = 0;
+			while (iterator.hasNext()) {
+				System.out.println(iterator.next());
+				count++;
 
-  static void saveBoards() {
-    System.out.println("[게시글 저장]");
+				// 5개 출력할 때 마다 계속 출력할지 묻는다.
+				if ((count % 5) == 0 && Prompt.inputString(":").equalsIgnoreCase("q")) {
+					break;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("history 명령 처리 중 오류 발생!");
+		}
+	}
 
-    // 데이터를 저장할 파일의 정보
-    File file = new File("./board.csv"); // 현재 폴더(.)은 프로젝트 폴더를 가리킨다.
+	static void saveBoards() {
+		System.out.println("[게시글 저장]");
 
-    FileWriter out = null;
-    try {
-      // 데이터를 파일에 출력할 때 사용할 도구
-      out = new FileWriter(file);
+		FileWriter out = null;
+		try {
+			// 데이터를 파일에 출력할 때 사용할 도구
+			out = new FileWriter(boardFile);
 
-      // 각각의 게시글 파일로 출력한다.
-      for (Board board : boardList) {
-        String record = String.format("%d,%s,%s,%s,%s,%d\n", 
-            board.getNo(),
-            board.getTitle(),
-            board.getContent(),
-            board.getWriter(),
-            board.getRegisteredDate().toString(),
-            board.getViewCount());
-        out.write(record); // 번호,제목,내용,작성자,작성일,조회수 CRLF
-      }
+			// 각각의 게시글 파일로 출력한다.
+			for (Board board : boardList) {
+				out.write(board.toCscString()); // 번호,제목,내용,작성자,작성일,조회수 CRLF
+			}
 
-    } catch (IOException e) {
-      System.out.println("파일 출력 작업 중에 오류 발생!");
+		} catch (IOException e) {
+			System.out.println("파일 출력 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			// 사용이 끝난 파일 출력 도구를 닫는다.
+			// => 이 과정에서 파일 출력 도구의 임시 메모리(버퍼)에 잔류하는 찌꺼기 데이터를 마무리로 완전히 출력한다.
+			try {
+				out.close();
+			} catch (Exception e) {
+				// close() 에서 오류가 발생할 때 마땅히 할 것이 없다.
+				// 그래서 그냥 무시한다.
+			}
+		}
+	}
 
-    } finally {
-      // 사용이 끝난 파일 출력 도구를 닫는다.
-      // => 이 과정에서 파일 출력 도구의 임시 메모리(버퍼)에 잔류하는 찌꺼기 데이터를 마무리로 완전히 출력한다.
-      try {
-        out.close();
-      } catch (Exception e) {
-        // close() 에서 오류가 발생할 때 마땅히 할 것이 없다.
-        // 그래서 그냥 무시한다.
-      }
-    }
-  }
+	static void loadBoards() {
+		System.out.println("[게시글 로딩!]");
 
-  static void loadBoards() {
-    System.out.println("[게시글 파일 로딩!]");
+		FileReader out = null;
+		Scanner scanner = null;
+		try {
+			// 파일에서 데이터를 읽을 때 사용할 도구
+			out = new FileReader(boardFile);
+			scanner = new Scanner(out); // FileReader 객체에 플러그인을 꼽는다.
 
-    // 데이터를 읽어 올 파일의 정보
-    File file = new File("./board.csv"); // 현재 폴더(.)은 프로젝트 폴더를 가리킨다.
+			while (true) {
+				try {
+					// 파일에서 한 줄 읽는다.
+					boardList.add(Board.valueOfCsv(scanner.nextLine()));
 
-    FileReader out = null;
-    Scanner scanner = null;
-    try {
-      // 파일에서 데이터를 읽을 때 사용할 도구
-      out = new FileReader(file);
-      scanner = new Scanner(out); // FileReader 객체에 플러그인을 꼽는다.
+				} catch (NoSuchElementException e) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("파일 읽기 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {scanner.close();} catch (Exception e) {}
+			try {out.close();} catch (Exception e) {}
+		}
+	}
 
-      while (true) {
-        try {
-          // 파일에서 한 줄 읽는다.
-          String record = scanner.nextLine(); // "번호,제목,내용,작성자,등록일,조회수"
+	static void saveMembers() {
+		System.out.println("[회원 저장]");
 
-          // CSV 문자열을 콤마(,)로 나눈다.
-          String[] values = record.split(",");
+		FileWriter out = null;
+		try {
+			out = new FileWriter(memberFile);
 
-          // 레코드 데이터를 저장할 객체를 준비
-          Board board = new Board();
+			for (Member member : memberList) {
+				out.write(member.toCscString());
+			}
 
-          // 레코드의 각 필드 값을 객체의 필드에 저장한다.
-          board.setNo(Integer.parseInt(values[0]));
-          board.setTitle(values[1]); // "20" ==> int
-          board.setContent(values[2]);
-          board.setWriter(values[3]);
-          board.setRegisteredDate(Date.valueOf(values[4])); // "yyyy-MM-dd" ==> java.sql.Date
-          board.setViewCount(Integer.parseInt(values[5]));
+		} catch (IOException e) {
+			System.out.println("파일 출력 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {out.close();} catch (Exception e) {}
+		}
+	}
 
-          // 객체를 List 목록에 추가한다.
-          boardList.add(board);
 
-        } catch (NoSuchElementException e) {
-          break;
-        }
-      }
-    } catch (IOException e) {
-      System.out.println("파일 읽기 작업 중에 오류 발생!");
 
-    } finally {
-      try {scanner.close();} catch (Exception e) {}
-      try {out.close();} catch (Exception e) {}
-    }
-  }
+	static void loadMembers() {
+		System.out.println("[회원 로딩!]");
+
+		FileReader out = null;
+		Scanner scanner = null;
+		try {
+			out = new FileReader(memberFile);
+			scanner = new Scanner(out);
+
+			while (true) {
+				try {
+					memberList.add(Member.valueOfCsv(scanner.nextLine())); // "번호,이름,이메일,암호,사진,전화,가입일"
+
+				} catch (NoSuchElementException e) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("파일 읽기 작업 중에 오류 발생!");
+		} finally {
+			try {scanner.close();} catch (Exception e) {}
+			try {out.close();} catch (Exception e) {}
+		}
+	}
+
+
+
+
+	static void saveProjects() {
+		System.out.println("[프로젝트 저장]");
+
+		FileWriter out = null;
+		try {
+			out = new FileWriter(projectFile);
+
+			for (Project project : projectList) {
+				out.write(project.toCscString());
+			}
+
+		} catch (IOException e) {
+			System.out.println("파일 출력 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {out.close();} catch (Exception e) {}
+		}
+	}
+
+
+	static void loadProjects() {
+		System.out.println("[프로젝트 로딩!]");
+
+		FileReader out = null;
+		Scanner scanner = null;
+		try {
+			out = new FileReader(projectFile);
+			scanner = new Scanner(out);
+
+			while (true) {
+				try {
+					String record = scanner.nextLine(); // "번호,프로젝트명,내용,시작일,종료일,소유자,멤버들"
+
+					projectList.add(Project.valueOfCsv(scanner.nextLine()));
+
+				} catch (NoSuchElementException e) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("파일 읽기 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {scanner.close();} catch (Exception e) {}
+			try {out.close();} catch (Exception e) {}
+		}
+	}
+
+	static void saveTasks() {
+		System.out.println("[작업 저장]");
+
+		FileWriter out = null;
+		try {
+			out = new FileWriter(taskFile);
+
+			for (Task task : taskList) {
+
+
+				out.write(task.toCscString()); // 번호,작업내용,마감일,상태,담당자 CRLF
+			}
+
+		} catch (IOException e) {
+			System.out.println("파일 출력 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {out.close();} catch (Exception e) {}
+		}
+	}
+
+	static void loadTasks() {
+		System.out.println("[작업 로딩!]");
+
+		FileReader out = null;
+		Scanner scanner = null;
+		try {
+			out = new FileReader(taskFile);
+			scanner = new Scanner(out);
+
+			while (true) {
+				try {
+					String record = scanner.nextLine(); // "번호,작업내용,마감일,상태,담당자"
+
+					taskList.add(Task.valueOfCsv(scanner.nextLine()));
+
+				} catch (NoSuchElementException e) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("파일 읽기 작업 중에 오류 발생!");
+			e.printStackTrace();
+		} finally {
+			try {scanner.close();} catch (Exception e) {}
+			try {out.close();} catch (Exception e) {}
+		}
+	}
 }
+
 
 
 
