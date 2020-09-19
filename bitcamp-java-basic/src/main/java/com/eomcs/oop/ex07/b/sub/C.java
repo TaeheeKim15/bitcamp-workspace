@@ -6,4 +6,3 @@ public class C {
   protected int protectedVar;
   public int publicVar;
 }
-

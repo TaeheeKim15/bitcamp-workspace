@@ -3,32 +3,32 @@ package com.eomcs.oop.ex01;
 // # 클래스 사용 : 2) 메서드 활용
 //
 public class Exam0111 {
-  public static void main(String[] args) {
-    String name;
-    int kor;
-    int eng;
-    int math;
-    int sum;
-    float aver;
+	public static void main(String[] args) {
+		String name;
+		int kor;
+		int eng;
+		int math;
+		int sum;
+		float aver;
 
-    name = "홍길동";
-    kor = 100;
-    eng = 90;
-    math = 85;
+		name = "홍길동";
+		kor = 100;
+		eng = 90;
+		math = 85;
 
-    // 메서드 추출
-    // - 학생 정보를 출력하는 명령어를 별도의 블록으로 뺐다.
-    // - 성적을 출력하는 명령어를 별도의 블록으로 빼는 이유는 유지보수를 쉽게 하기 위함이다.
-    // - 출력 형식을 바꾸고 싶으면 그 블록으로 가서 변경하면 된다.
-    //
-    printScore(name, kor, eng, math);
-  }
+		// 메서드 추출
+		// - 학생 정보를 출력하는 명령어를 별도의 블록으로 뺐다.
+		// - 성적을 출력하는 명령어를 별도의 블록으로 빼는 이유는 유지보수를 쉽게 하기 위함이다.
+		// - 출력 형식을 바꾸고 싶으면 그 블록으로 가서 변경하면 된다.
+		//
+		printScore(name, kor, eng, math);
+	}
 
-  static void printScore(String name, int kor, int eng, int math) {
-    int sum = kor + eng + math;
-    float aver = sum / 3f;
-    System.out.printf("%s: %d, %d, %d, %d, %.1f\n", name, kor, eng, math, sum, aver);
-  }
+	static void printScore(String name, int kor, int eng, int math) {
+		int sum = kor + eng + math;
+		float aver = sum / 3f;
+		System.out.printf("%s: %d, %d, %d, %d, %.1f\n", name, kor, eng, math, sum, aver);
+	}
 }
 // 만약 과목이 12개라면 어떨것 같아?
 // => 음.. 그건 좀.. 값이 많아지면, 메서드의 파라미터가 많아지고,

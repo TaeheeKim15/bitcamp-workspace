@@ -16,14 +16,11 @@ public class A3 extends A {
   //    메서드를 만든다.
   //    메서드 시그너처(method signature) = 함수 프로토타입(function prototype)
   //       메서드명, 파라미터 타입/개수, 리턴 타입
-
   @Override
   void print() {
-    System.out.printf("'%s(%d)'님 반가웡!\n", this.name, this.age);
+    System.out.printf("'%s(%d)'님 반갑습니다!\n", this.name, this.age);
   }
 }
-
-
 
 
 

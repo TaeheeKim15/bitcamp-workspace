@@ -37,6 +37,8 @@ public class Exam0120 {
 
     float r4 = Calculator.plus(35.7f, 22);
     System.out.println(r4);
+
+    //float r5 = Calculator.plus(35.7, 22); 컴파일 오류!
   }
 }
 

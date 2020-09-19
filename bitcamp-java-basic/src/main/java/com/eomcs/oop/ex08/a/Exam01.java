@@ -1,8 +1,6 @@
 // 상속 - Generalization 수행 전
 package com.eomcs.oop.ex08.a;
 
-// 주석을 읽어보는 것이 중요하다 
-
 // 상속의 종류
 // 1) specialization
 //    => 가장 많이 사용하는 방법으로 수퍼 클래스를 상속 받아 서브 클래스를 만드는 것이다.
@@ -18,7 +16,7 @@ package com.eomcs.oop.ex08.a;
 // 두 클래스는 이렇게 새로 만든 Car 클래스를 상속 받도록 한다.
 public class Exam01 {
 
-	public static void main(String[] args) {
-	}
+  public static void main(String[] args) {
+  }
 
 }

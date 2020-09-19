@@ -35,7 +35,7 @@ public class Exam0210 extends C {
     Exam0210 obj4 = new Exam0210();
     //obj4.privateVar = 100; // 접근 불가! C 클래스에서만 접근 가능
     //obj4.defaultVar = 100; // 접근 불가! C 클래스와 같은 패키지가 아니다.
-    obj4.protectedVar = 100; // OK! Exam02_1는 C의 자식 클래스이며,
+    obj4.protectedVar = 100; // OK! Exam0210은 C의 자식 클래스이며,
     // 또한 C로부터 상속 받아서 만든 자기 변수이다.
     obj4.publicVar = 100;
   }
@@ -48,8 +48,8 @@ public class Exam0210 extends C {
   }
 
   void m2(Exam0210 obj) {
-//    obj.privateVar = 100;
-//    obj.defaultVar = 100;
+    //obj.privateVar = 100;
+    //obj.defaultVar = 100;
     obj.protectedVar = 100;
     obj.publicVar = 100;
   }

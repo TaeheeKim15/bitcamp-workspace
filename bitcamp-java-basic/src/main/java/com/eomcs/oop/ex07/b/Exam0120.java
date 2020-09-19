@@ -3,8 +3,6 @@ package com.eomcs.oop.ex07.b;
 
 public class Exam0120 {
 
-
-
   public static void main(String[] args) {
     // 환자 데이터를 등록해보자!
     Customer2 c1 = new Customer2();

@@ -1,43 +1,37 @@
+// 클래스 변수의 응용: 클래스 변수 활용 전
+//
 package com.eomcs.oop.ex03;
 
 public class Exam0160 {
-  static class Car {
-    // 클래스 필드
-    // - 모든 인스턴스가 공유하는 값을 저장하는 용도이다.
-    static int count;
 
-    static final int SEDAN = 1;
-    static final int TRUCK = 2;
-
-    // 인스턴스 필드
-    // - 개별적으로 관리되어야 할 값을 저장하는 용도이다
-    String model;
-    String no;
-    int cc;
-    int type;
+  static class Member {
+    String id;
+    String password;
+    int type; // 0: 손님, 1: 회원, 2: 관리자
   }
-
-
 
   public static void main(String[] args) {
-    Car c1 = new Car();
-    Car c2 = new Car();
+    Member m1 = new Member();
+    m1.id = "aaa";
+    m1.password = "1111";
+    m1.type = 0;
 
-    c1.model = "티코";
-    c1.no = "40-1111";
-    c1.cc = 980;
-    c1.type = Car.SEDAN; //승용차
-    Car.count++;
+    Member m2 = new Member();
+    m2.id = "bbb";
+    m2.password = "1111";
+    m2.type = 2;
 
-    c2.model = "타이탄";
-    c2.no = "50-2222";
-    c2.cc = 10000;
-    c2.type = Car.TRUCK; // 트럭
-    Car.count++;
+    Member m3 = new Member();
+    m3.id = "ccc";
+    m3.password = "1111";
+    m3.type = 1;
 
-    System.out.printf("%s, %s, %d\n", c1.model, c1.no, c1.cc);
-    System.out.printf("%s, %s, %d\n", c2.model, c2.no, c2.cc);
-    System.out.println(Car.count);
-
+    // 회원의 타입을 지정할 때 숫자를 이용하였다.
+    // 그런데 소스 코드를 작성한 후 시간이 오래 지나면 숫자의 의미를 기억하기가 쉽지 않다.
+    // 소스 코드를 작성한 사람도 숫자의 의미를 기억하기가 쉽지 않은데,
+    // 남의 소스 코드를 유지보수하는 사람은 더더욱 숫자의 의미를 파악하기란 어렵다.
+    // 주석이나 개발 문서를 자세히 살펴보지 않는 이상에는 숫자의 의미를 파악하기 쉽지 않다.
   }
 }
+
+

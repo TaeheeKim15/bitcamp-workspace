@@ -2,10 +2,11 @@
 package com.eomcs.oop.ex06.e;
 
 public class Exam0140 extends Exam0130 {
-//  @Override
-//  public void m1() {
-//    // final 메서드는 오버라이딩 불가!
-//  }
+
+  //  @Override
+  //  public void m1() {
+  //    // final 메서드는 오버라이딩 불가!
+  //  }
 
 
   @Override
@@ -14,6 +15,3 @@ public class Exam0140 extends Exam0130 {
   }
 
 }
-
-// 상속받아서 확장하지 말라는 뜻~
-// String class 가 final class 란다

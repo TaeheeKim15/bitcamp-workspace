@@ -3,25 +3,20 @@ package com.eomcs.oop.ex02;
 public class Exam0111 {
 
   static class Score {
-    String name = "홍길동";
-    int kor = 65;
-    int eng = 70;
-    int math = 90;
-    int sum = kor + eng + math;
-    float aver = sum / 3f;
-
+    String name;
+    int kor;
+    int eng;
+    int math;
+    int sum;
+    float aver;
   }
 
-
-
-
   public static void main(String[] args) {
-
 
     Score s1;
     s1 = new Score();
 
-    s1.name= "홍길동";
+    s1.name = "홍길동";
     s1.kor = 100;
     s1.eng = 90;
     s1.math = 87;
@@ -29,13 +24,14 @@ public class Exam0111 {
     s1.aver = s1.sum / 3f;
 
     printScore(s1);
-
   }
 
   static void printScore(Score s) {
-    System.out.printf("%s: %d, %d, %d,%d,: %.1f\n",
+    System.out.printf("%s: %d, %d, %d, %d, %.1f\n",
         s.name, s.kor, s.eng, s.math, s.sum, s.aver);
 
   }
-
 }
+
+
+

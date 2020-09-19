@@ -13,17 +13,17 @@ public class Exam0910 {
     //
     // 주의! 로컬 변수는 자동 초기화 되지 않는다.
     //
-
     int bright; // 밝기 (0% ~ 100%)
     int contrast; // 명암 (0% ~ 100%)
     int widthRes; // 해상도 너비
     int heightRes; // 해상도 높이
 
     void display() {
-      System.out.println("-------------------------");
+      System.out.println("----------------------------------");
       System.out.printf("밝기(%d)\n", this.bright);
       System.out.printf("명암(%d)\n", this.contrast);
       System.out.printf("해상도(%d x %d)\n", this.widthRes, this.heightRes);
+      System.out.println("----------------------------------");
     }
   }
 
@@ -31,7 +31,7 @@ public class Exam0910 {
     // 모니터 인스턴스 생성
     Monitor m1 = new Monitor();
 
-    // 출력 결과는 모두 0이다
+    // 출력결과는 모두 0이다.
     m1.display();
 
     // 모니터의 중요 필드 값을 초기화시키지 않고 사용하면 제대로 동작이 안 될 수 있다.
@@ -49,7 +49,7 @@ public class Exam0910 {
     m1.bright = 50;
     m1.contrast = 50;
     m1.widthRes = 1920;
-    m1.bright = 1080;
+    m1.heightRes = 1080;
 
     m1.display();
 
@@ -61,17 +61,7 @@ public class Exam0910 {
     // => 인스턴스의 메서드를 사용하는데 문제가 없도록 인스턴스의 각 필드를 유효한 값으로
     // 미리 초기화 했으면 좋겠습니다!
 
-
   }
 }
-
-
-
-
-
-
-
-
-
 
 

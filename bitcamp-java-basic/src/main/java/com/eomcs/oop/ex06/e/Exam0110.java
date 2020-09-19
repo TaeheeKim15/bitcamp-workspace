@@ -5,6 +5,3 @@ package com.eomcs.oop.ex06.e;
 public final class Exam0110 {
 
 }
-
-
-// 다른 개발자가 수정하지 못하도록

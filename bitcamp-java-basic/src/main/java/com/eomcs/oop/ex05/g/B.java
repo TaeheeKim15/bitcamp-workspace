@@ -4,7 +4,7 @@ public class B extends A {
   int v2;
 
   B() {
-    // 수퍼 클래스의 어떤 생성자를 호출할지 지정하지 않으면 컴파일러는
+    // 수퍼 클래스의 어떤 생성자를 호출할지 지정하지 않으면 컴파일러는 
     // 다음과 같이 수퍼 클래스의 기본 생성자를 호출하라는 명령을 붙인다.
     //super();
     // 만약 수퍼 클래스에 기본 생성자가 없으면 컴파일 오류가 발생한다!
@@ -15,10 +15,10 @@ public class B extends A {
 
     System.out.println("B() 생성자!");
   }
-
-  B(int value) {
-
-    super();
-    this.v2 = value;
-  }
 }
+
+
+
+
+
+

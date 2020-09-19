@@ -4,10 +4,10 @@ package com.eomcs.oop.ex06.a;
 public class Exam0512 {
 
   public static void main(String[] args) {
-    Vehicle v = new Truck();
-
+    Vehicle v = new Sedan();
+    
     // getClass() ?
-    // => 레퍼런스가 가리키는 인스턴스의 실제 클래스 정보를 리턴한다
+    // => 레퍼런스가 가리키는 인스턴스의 실제 클래스 정보를 리턴한다.
     // => == 연산자를 사용하여 특정 클래스의 인스턴스인지 좁혀서 검사할 수 있다.
     //
     System.out.println(v.getClass() == Sedan.class);
@@ -17,7 +17,8 @@ public class Exam0512 {
     System.out.println(v.getClass() == Bike.class);
   }
 
+}
 
-  }
+
 
 

@@ -7,6 +7,6 @@ public class A {
   boolean working = true;
 
   void print() {
-    System.out.printf("'%s'님 반가워용.\n", this.name);
+    System.out.printf("'%s'님 반갑습니다.\n", this.name);
   }
 }

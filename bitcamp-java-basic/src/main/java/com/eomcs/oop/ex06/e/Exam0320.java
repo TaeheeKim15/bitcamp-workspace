@@ -11,6 +11,5 @@ public final class Exam0320 {
     // 보통 실무에서 파라미터를 final로 선언한다.
     //
     //a = 200; // 컴파일 오류!
-    final int b = 200;
   }
 }

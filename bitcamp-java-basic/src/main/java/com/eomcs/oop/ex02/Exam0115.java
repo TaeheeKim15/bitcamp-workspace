@@ -8,12 +8,11 @@ public class Exam0115 {
     int eng;
     int math;
     int sum;
-    float average;
-    // 변수 설계도(Heap에 만들어진다)
+    float aver;
 
-    void computeScore() {
+    void compute() {
       this.sum = this.kor + this.eng + this.math;
-      this.average = this.sum / 3f;
+      this.aver = this.sum / 3f;
     }
   }
 
@@ -21,36 +20,33 @@ public class Exam0115 {
 
     Score s1;
     s1 = new Score();
-    // 덩어리로 묶지 않으면 메모리 주소를 전달할 수 없다
+
     s1.name = "홍길동";
     s1.kor = 100;
     s1.eng = 90;
     s1.math = 87;
-    s1.computeScore();
+    s1.compute();
 
-    Score s2;
-    s2 = new Score();
-    // 덩어리로 묶지 않으면 메모리 주소를 전달할 수 없다
+    Score s2 = new Score();
     s2.name = "임꺽정";
-    s2.kor = 100;
-    s2.eng = 90;
-    s2.math = 87;
-    s2.computeScore();
-    // 둘 다 명시적 형변환을 해주거나 하나를 형변환 주어야 한다
-
+    s2.kor = 90;
+    s2.eng = 100;
+    s2.math = 100;
+    s2.compute();
 
     printScore(s1);
-    System.out.println("------------");
+
+    System.out.println("--------------");
+
     printScore(s2);
-
   }
-
-
 
   static void printScore(Score s) {
-    System.out.printf("%s: %d, %d, %d,%d,: %.1f\n",
-        s.name, s.kor, s.eng, s.math, s.sum, s.average);
+    System.out.printf("%s: %d, %d, %d, %d, %.1f\n",
+        s.name, s.kor, s.eng, s.math, s.sum, s.aver);
 
   }
-
 }
+
+
+
