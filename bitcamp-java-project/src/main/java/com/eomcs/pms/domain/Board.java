@@ -1,8 +1,11 @@
 package com.eomcs.pms.domain;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Board {
+public class Board implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private int no;
 	private String title;
 	private String content;
@@ -46,40 +49,6 @@ public class Board {
 	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
 	}
-
-
-	// Board 객체의 데이터를 CSV 문자열로 바꾸는 일을 한다
-	// => 기존 코드를 가져와서 메서드로 정의한다.
-	public String toCscString() {
-		return String.format("%d,%s,%s,%s,%s,%d\n", 
-				this.getNo(),
-				this.getTitle(),
-				this.getContent(),
-				this.getWriter(),
-				this.getRegisteredDate().toString(),
-				this.getViewCount());
-	}
-
-	// Board 객체를 생성하는 팩토리 메서드의 역할을 한다.
-	// => 기존 코드를 별도의 메서드로 추출한다.(extract method)
-	public static  Board valueOfCsv(String csv) {
-		// CSV 문자열을 콤마(,)로 나눈다.
-		String[] values = csv.split(",");
-
-		// 레코드 데이터를 저장할 객체를 준비
-		Board board = new Board();
-
-		// 레코드의 각 필드 값을 객체의 필드에 저장한다.
-		board.setNo(Integer.parseInt(values[0]));
-		board.setTitle(values[1]); // "20" ==> int
-		board.setContent(values[2]);
-		board.setWriter(values[3]);
-		board.setRegisteredDate(Date.valueOf(values[4])); // "yyyy-MM-dd" ==> java.sql.Date
-		board.setViewCount(Integer.parseInt(values[5]));
-
-		return board;
-	}
-
 
 
 }
