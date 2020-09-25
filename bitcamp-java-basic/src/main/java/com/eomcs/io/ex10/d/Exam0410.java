@@ -7,23 +7,23 @@ import java.io.ObjectOutputStream;
 
 public class Exam0410 {
 
-  public static void main(String[] args) throws Exception {
-    FileOutputStream fileOut = new FileOutputStream("temp/test11.data");
-    BufferedOutputStream bufOut = new BufferedOutputStream(fileOut);
-    ObjectOutputStream out = new ObjectOutputStream(bufOut);
+	public static void main(String[] args) throws Exception {
+		FileOutputStream fileOut = new FileOutputStream("temp/test11.data");
+		BufferedOutputStream bufOut = new BufferedOutputStream(fileOut);
+		ObjectOutputStream out = new ObjectOutputStream(bufOut);
 
-    Member member = new Member();
-    member.name = "AB가각간";
-    member.age = 27;
-    member.gender = true;
+		Member member = new Member();
+		member.name = "AB가각간";
+		member.age = 27;
+		member.gender = true;
 
-    // serialize 하는 Member의 버전은 1280 이다.
-    out.writeObject(member);
+		// serialize 하는 Member의 버전은 1280 이다.
+		out.writeObject(member);
 
-    out.close();
+		out.close();
 
-    System.out.println("출력 완료!");
-  }
+		System.out.println("출력 완료!");
+	}
 
 }
 
