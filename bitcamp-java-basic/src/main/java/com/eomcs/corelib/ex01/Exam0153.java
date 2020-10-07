@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 
 public class Exam0153 {
-
+  
   static class MyKey2 {
     String contents;
-
+    
     public MyKey2(String contents) {
       this.contents = contents;
     }
@@ -45,30 +45,25 @@ public class Exam0153 {
   }
   public static void main(String[] args) {
     HashMap<MyKey2,Student> map = new HashMap<>();
-
+    
     MyKey2 k1 = new MyKey2("ok");
     MyKey2 k2 = new MyKey2("no");
     MyKey2 k3 = new MyKey2("haha");
     MyKey2 k4 = new MyKey2("ohora");
     MyKey2 k5 = new MyKey2("hul");
-
+    
     map.put(k1, new Student("홍길동", 20, false));
     map.put(k2, new Student("임꺽정", 30, true));
     map.put(k3, new Student("유관순", 17, true));
     map.put(k4, new Student("안중근", 24, true));
     map.put(k5, new Student("윤봉길", 22, false));
-
-    // 실무에서는 따로 키를 만들지는 않는다
-    // 해시맵에서 사용하는 키는 해시코드랑 해시코드를 오버라이딩
-
-    // 실무에서는 키를 string or integer를 써라
-
+    
     System.out.println(map.get(k3));
-
+    
     // 다른 key 객체를 사용하여 값을 꺼내보자.
     MyKey2 k6 = new MyKey2("haha");
 
-    System.out.println(map.get(k6));
+    System.out.println(map.get(k6)); // OK! 값을 정상적으로 꺼낼 수 있다.
     // k3와 k6는
     // hashCode()의 리턴 값이 같다
     // equals() 비교 결과도 true 이기 때문에
@@ -79,8 +74,6 @@ public class Exam0153 {
     System.out.println(k3.hashCode()); // hash code는 같다.
     System.out.println(k6.hashCode()); // hash code는 같다.
     System.out.println(k3.equals(k6)); // equals()의 비교 결과도 같다.
-
-
   }
 }
 

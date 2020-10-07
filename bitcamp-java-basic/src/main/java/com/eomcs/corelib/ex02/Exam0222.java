@@ -14,8 +14,6 @@ public class Exam0222 {
     // => 이렇게 Wrapper 객체 안에 들어 있는 값을 자동으로 꺼낸다고 해서
     // "오토언박싱"이라 부른다.
 
-    System.out.println(obj.intValue());
-
 
   }
 }

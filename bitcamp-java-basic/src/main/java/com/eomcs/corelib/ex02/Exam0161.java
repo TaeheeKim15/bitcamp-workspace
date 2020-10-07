@@ -12,9 +12,6 @@ public class Exam0161 {
 
     buf.replace(2, 4, "xxxx");// 원본을 바꾼다.
     System.out.println(buf);
-    // (x, y)
-    // 첫 시작은 0부터
-    // x 이상 y미만
 
     // println() 메서드에 넘겨주는 파라미터 값이 String 타입이 아닐 경우,
     // println() 메서드 내부에서 해당 값에 대해 toString() 호출하여

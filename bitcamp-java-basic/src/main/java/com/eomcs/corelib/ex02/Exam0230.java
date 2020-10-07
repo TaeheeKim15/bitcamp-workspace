@@ -32,7 +32,6 @@ public class Exam0230 {
     // 다음과 같이 auto-boxing으로 생성된 객체와 valueOf()가 리턴한 객체를 비교해 보자!
     System.out.println(obj3 == obj5); // true
 
-    System.out.println("-----------------------");
     // 주의!
     // -128 ~ 127 범위를 넘어가는 경우
     // 무조건 새 객체를 만들고 캐시에 보관하지 않는다.
@@ -43,41 +42,10 @@ public class Exam0230 {
     System.out.println(obj7 == obj9); // false
     System.out.println(obj8 == obj9); // false
 
-    System.out.println("--------------------");
     // 따라서 auto-boxing 된 wrapper 객체의 값을 비교할 때도
-    // String equals로 비교하라
+    // String 처럼 equals()로 비교하라!
     System.out.println(obj7.equals(obj8));
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

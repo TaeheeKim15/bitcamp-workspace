@@ -14,23 +14,19 @@ public class Exam0110 {
 
     ArrayBlockingQueue queue = new ArrayBlockingQueue(10);
     queue.offer(s1); // aaa,
-    print(queue);
     queue.offer(s2); // aaa, bbb,
-    print(queue);
     queue.offer(s3); // aaa, bbb, ccc,
     print(queue);
 
-    System.out.println("==> " + queue.poll()); // bbb, ccc,
-    print(queue);
-    System.out.println("==> " + queue.poll()); // ccc,
+    System.out.println("==>" + queue.poll()); // bbb, ccc,
+    System.out.println("==>" + queue.poll()); // ccc,
     print(queue);
 
     queue.offer(s4); // ccc, ddd,
-    print(queue);
     queue.offer(s5); // ccc, ddd, eee,
     print(queue);
 
-    System.out.println("---------------");
+    System.out.println("------------------------");
 
     String value;
     while ((value = (String) queue.poll()) != null) {
