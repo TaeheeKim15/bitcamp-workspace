@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -18,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import com.eomcs.context.ApplicationContextListener;
+import com.eomcs.listener.AppInitListener;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
@@ -50,7 +51,53 @@ import com.google.gson.Gson;
 
 public class App {
 
-	public static void main(String[] args) {
+	// 옵저버를 보관할 컬렉션 객체
+	List<ApplicationContextListener> listeners = new ArrayList<>();
+
+	// 옵저버를 등록하는 메서드
+	public void addApplicationContextListener(ApplicationContextListener listener) {
+		listeners.add(listener);
+	}
+
+	// 옵저버를 제거하는 메서드
+	public void removeApplicationContextListener(ApplicationContextListener listener) {
+		listeners.remove(listener);
+	}
+
+	// service() 실행 전에 옵저버에게 통지한다.
+	private void notifyApplicationContextListenerOnServiceStarted() {
+		for (ApplicationContextListener listener : listeners) {
+			// 곧 서비스를 시작할테니 준비하라고
+			// 서비스 시작에 관심있는 각 옵저버에게 통지한다
+			listener.contextDestroyed();
+		}
+	}
+
+	// service() 실행 후 옵저버에르 닫는다.
+	private void notifyApplicationContextListenerOnServiceStopped() {
+		for (ApplicationContextListener listener : listeners) {
+			// 서비스가 종료되었으니 마무리 작업하라고,
+			// 마무리 작업에 관심있는 각 옵저버에게 통지한다.
+			listener.contextDestroyed();
+		}
+
+	}
+
+	public static void main(String[] args) throws Exception {
+		App app = new App();
+
+		// 옵저버 등록
+		app.addApplicationContextListener(new AppInitListener());
+
+		app.service();
+	}
+
+	public void service() throws Exception {
+
+		// 옵저버에게 통지한다
+		notifyApplicationContextListenerOnServiceStarted();
+
+
 		// 스태틱 멤버들이 공유하는 변수가 아니라면 로컬 변수로 만들라.
 		List<Board> boardList = new ArrayList<>();
 		File boardFile = new File("./board.json"); // 게시글을 저장할 파일 정보
@@ -146,6 +193,10 @@ public class App {
 		saveObjects(memberList, memberFile);
 		saveObjects(projectList, projectFile);
 		saveObjects(taskList, taskFile);
+
+		// 옵저버에게 통지한다
+		notifyApplicationContextListenerOnServiceStopped();
+
 	}
 
 	static void printCommandHistory(Iterator<String> iterator) {
@@ -203,41 +254,20 @@ public class App {
 		try {
 			in = new BufferedReader(new FileReader(file));
 
-			// 1) 직접 문자열을 읽어 Gson에게 전달하기
 			// 파일에서 모든 문자열을 읽어 StringBuilder에 담은 다음에 
 			// 최종적으로 String 객체를 꺼낸다.
-			//      StringBuilder strBuilder = new StringBuilder();
-			//      int b = 0;
-			//      while ((b = in.read()) != -1) {
-			//        strBuilder.append((char) b);
-			//      }
-			//
-			//      // JSON 문자열을 가지고 자바 객체를 생성한다.
-			//      Gson gson = new Gson();
-			//      T[] arr = gson.fromJson(strBuilder.toString(), clazz);
-			//      for (T obj : arr) {
-			//        list.add(obj);
-			//      }
+			StringBuilder strBuilder = new StringBuilder();
+			int b = 0;
+			while ((b = in.read()) != -1) {
+				strBuilder.append((char) b);
+			}
 
-			// 2) 입력 스트림을 직접 Gson에게 전달하기
-			//			Gson gson = new Gson();
-			//			T[] arr = gson.fromJson(in, clazz);
-			//			for (T obj : arr) {
-			//				list.add(obj);
-			//			}
-
-			// 3) 배열을 컬렉션에 바로 전달하기
-			// => 개발자가 반복문을 전달하는 대신 메서드 호출을 통해 목록에 넣는다
-			//			Gson gson = new Gson();
-			//			T[] arr = gson.fromJson(in, clazz);
-			//			// 배열 => 컬렉션 객체 => list에 추가하기
-			//			list.addAll(Arrays.asList(arr));
-
-			// 4) 코드 정리
-			list.addAll(Arrays.asList(new Gson().fromJson(in, clazz)));
-
-			// Json 배열을 리턴한다
-
+			// JSON 문자열을 가지고 자바 객체를 생성한다.
+			Gson gson = new Gson();
+			T[] arr = gson.fromJson(strBuilder.toString(), clazz);
+			for (T obj : arr) {
+				list.add(obj);
+			}
 
 			System.out.printf("'%s' 파일에서 총 %d 개의 객체를 로딩했습니다.\n", 
 					file.getName(), list.size());
@@ -254,3 +284,4 @@ public class App {
 		}
 	}
 }
+
