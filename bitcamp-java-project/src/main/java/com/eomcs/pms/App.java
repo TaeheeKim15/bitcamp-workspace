@@ -1,14 +1,7 @@
 package com.eomcs.pms;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,9 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
 import com.eomcs.context.ApplicationContextListener;
-import com.eomcs.listener.AppInitListener;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
@@ -45,243 +36,167 @@ import com.eomcs.pms.handler.TaskDeleteCommand;
 import com.eomcs.pms.handler.TaskDetailCommand;
 import com.eomcs.pms.handler.TaskListCommand;
 import com.eomcs.pms.handler.TaskUpdateCommand;
-import com.eomcs.util.CsvObject;
+import com.eomcs.pms.listener.AppInitListener;
 import com.eomcs.util.Prompt;
-import com.google.gson.Gson;
 
 public class App {
 
-	// 옵저버를 보관할 컬렉션 객체
-	List<ApplicationContextListener> listeners = new ArrayList<>();
+  // 옵저버와 공유할 맵 객체
+  Map<String, Object> context = new HashMap<>();
 
-	// 옵저버를 등록하는 메서드
-	public void addApplicationContextListener(ApplicationContextListener listener) {
-		listeners.add(listener);
-	}
+  // 옵저버를 보관할 컬렉션 객체
+  List<ApplicationContextListener> listeners = new ArrayList<>();
 
-	// 옵저버를 제거하는 메서드
-	public void removeApplicationContextListener(ApplicationContextListener listener) {
-		listeners.remove(listener);
-	}
+  // 옵저버를 등록하는 메서드
+  public void addApplicationContextListener(ApplicationContextListener listener) {
+    listeners.add(listener);
+  }
 
-	// service() 실행 전에 옵저버에게 통지한다.
-	private void notifyApplicationContextListenerOnServiceStarted() {
-		for (ApplicationContextListener listener : listeners) {
-			// 곧 서비스를 시작할테니 준비하라고
-			// 서비스 시작에 관심있는 각 옵저버에게 통지한다
-			listener.contextDestroyed();
-		}
-	}
-
-	// service() 실행 후 옵저버에르 닫는다.
-	private void notifyApplicationContextListenerOnServiceStopped() {
-		for (ApplicationContextListener listener : listeners) {
-			// 서비스가 종료되었으니 마무리 작업하라고,
-			// 마무리 작업에 관심있는 각 옵저버에게 통지한다.
-			listener.contextDestroyed();
-		}
-
-	}
-
-	public static void main(String[] args) throws Exception {
-		App app = new App();
-
-		// 옵저버 등록
-		app.addApplicationContextListener(new AppInitListener());
-
-		app.service();
-	}
-
-	public void service() throws Exception {
-
-		// 옵저버에게 통지한다
-		notifyApplicationContextListenerOnServiceStarted();
+  // 옵저버를 제거하는 메서드
+  public void removeApplicationContextListener(ApplicationContextListener listener) {
+    listeners.remove(listener);
+  }
 
 
-		// 스태틱 멤버들이 공유하는 변수가 아니라면 로컬 변수로 만들라.
-		List<Board> boardList = new ArrayList<>();
-		File boardFile = new File("./board.json"); // 게시글을 저장할 파일 정보
+  // service() 실행 전에 옵저버에게 통지한다
+  private void notifyApplicationContextListenerOnServiceStarted() {
+    for (ApplicationContextListener listener : listeners) {
+      // 곧 서비스를 시작할테니 준비하라고
+      // 서비스 시작에 관심있는 각 옵저버에게 통지한다.
+      listener.contextInitialized(context);
+    }
+  }
 
-		List<Member> memberList = new LinkedList<>();
-		File memberFile = new File("./member.json"); // 회원을 저장할 파일 정보
+  private void notifyApplicationContextListenerOnServiceStopped() {
+    for (ApplicationContextListener listener : listeners) {
+      // 서비스가 종료되었으니 마무리 작업하라고
+      // 마무리 작업에 관심있는 각 옵저버에게 통지한다
+      listener.contextDestroyed(context);
+    }
+  }
 
-		List<Project> projectList = new LinkedList<>();
-		File projectFile = new File("./project.json"); // 프로젝트를 저장할 파일 정보
 
-		List<Task> taskList = new ArrayList<>();
-		File taskFile = new File("./task.json"); // 작업을 저장할 파일 정보
+  public static void main(String[] args) throws Exception {
+    App app = new App();
 
-		// 파일에서 데이터 로딩
-		loadObjects(boardList, boardFile, Board[].class);
-		loadObjects(memberList, memberFile, Member[].class);
-		loadObjects(projectList, projectFile, Project[].class);
-		loadObjects(taskList, taskFile, Task[].class);
+    // 옵저버 등록
+    app.addApplicationContextListener(new AppInitListener());
 
-		Map<String,Command> commandMap = new HashMap<>();
 
-		commandMap.put("/board/add", new BoardAddCommand(boardList));
-		commandMap.put("/board/list", new BoardListCommand(boardList));
-		commandMap.put("/board/detail", new BoardDetailCommand(boardList));
-		commandMap.put("/board/update", new BoardUpdateCommand(boardList));
-		commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
+    app.service();
+  }
 
-		MemberListCommand memberListCommand = new MemberListCommand(memberList);
-		commandMap.put("/member/add", new MemberAddCommand(memberList));
-		commandMap.put("/member/list", memberListCommand);
-		commandMap.put("/member/detail", new MemberDetailCommand(memberList));
-		commandMap.put("/member/update", new MemberUpdateCommand(memberList));
-		commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
+  public void service() throws Exception {
 
-		commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
-		commandMap.put("/project/list", new ProjectListCommand(projectList));
-		commandMap.put("/project/detail", new ProjectDetailCommand(projectList));
-		commandMap.put("/project/update", new ProjectUpdateCommand(projectList, memberListCommand));
-		commandMap.put("/project/delete", new ProjectDeleteCommand(projectList));
+    notifyApplicationContextListenerOnServiceStarted();
 
-		commandMap.put("/task/add", new TaskAddCommand(taskList, memberListCommand));
-		commandMap.put("/task/list", new TaskListCommand(taskList));
-		commandMap.put("/task/detail", new TaskDetailCommand(taskList));
-		commandMap.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
-		commandMap.put("/task/delete", new TaskDeleteCommand(taskList));
+    // 옵저버가 작업한 결과를 맵에서 꺼낸다
+    List<Board> boardList = (List<Board>) context.get("boardList");
+    List<Member> memberList = (List<Member>) context.get("memberList");
+    List<Project> projectList = (List<Project>) context.get("projectList");
+    List<Task> taskList = (List<Task>) context.get("taskList");
 
-		commandMap.put("/hello", new HelloCommand());
 
-		Deque<String> commandStack = new ArrayDeque<>();
-		Queue<String> commandQueue = new LinkedList<>();
 
-		loop:
-			while (true) {
-				String inputStr = Prompt.inputString("명령> ");
 
-				if (inputStr.length() == 0) {
-					continue;
-				}
+    Map<String, Command> commandMap = new HashMap<>();
 
-				commandStack.push(inputStr);
-				commandQueue.offer(inputStr);
+    commandMap.put("/board/add", new BoardAddCommand(boardList));
+    commandMap.put("/board/list", new BoardListCommand(boardList));
+    commandMap.put("/board/detail", new BoardDetailCommand(boardList));
+    commandMap.put("/board/update", new BoardUpdateCommand(boardList));
+    commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
 
-				switch (inputStr) {
-				case "history": printCommandHistory(commandStack.iterator()); break;
-				case "history2": printCommandHistory(commandQueue.iterator()); break;
-				case "quit":
-				case "exit":
-					System.out.println("안녕!");
-					break loop;
-				default:
-					Command command = commandMap.get(inputStr);
-					if (command != null) {
-						try {
-							// 실행 중 오류가 발생할 수 있는 코드는 try 블록 안에 둔다.
-							command.execute();
-						} catch (Exception e) {
-							// 오류가 발생하면 그 정보를 갖고 있는 객체의 클래스 이름을 출력한다.
-							System.out.println("--------------------------------------------------------------");
-							System.out.printf("명령어 실행 중 오류 발생: %s\n", e);
-							System.out.println("--------------------------------------------------------------");
-						}
-					} else {
-						System.out.println("실행할 수 없는 명령입니다.");
-					}
-				}
-				System.out.println();
-			}
+    MemberListCommand memberListCommand = new MemberListCommand(memberList);
+    commandMap.put("/member/add", new MemberAddCommand(memberList));
+    commandMap.put("/member/list", memberListCommand);
+    commandMap.put("/member/detail", new MemberDetailCommand(memberList));
+    commandMap.put("/member/update", new MemberUpdateCommand(memberList));
+    commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
 
-		Prompt.close();
+    commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
+    commandMap.put("/project/list", new ProjectListCommand(projectList));
+    commandMap.put("/project/detail", new ProjectDetailCommand(projectList));
+    commandMap.put("/project/update", new ProjectUpdateCommand(projectList, memberListCommand));
+    commandMap.put("/project/delete", new ProjectDeleteCommand(projectList));
 
-		// 데이터를 파일에 저장
-		saveObjects(boardList, boardFile);
-		saveObjects(memberList, memberFile);
-		saveObjects(projectList, projectFile);
-		saveObjects(taskList, taskFile);
+    commandMap.put("/task/add", new TaskAddCommand(taskList, memberListCommand));
+    commandMap.put("/task/list", new TaskListCommand(taskList));
+    commandMap.put("/task/detail", new TaskDetailCommand(taskList));
+    commandMap.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
+    commandMap.put("/task/delete", new TaskDeleteCommand(taskList));
 
-		// 옵저버에게 통지한다
-		notifyApplicationContextListenerOnServiceStopped();
+    commandMap.put("/hello", new HelloCommand());
 
-	}
+    Deque<String> commandStack = new ArrayDeque<>();
+    Queue<String> commandQueue = new LinkedList<>();
 
-	static void printCommandHistory(Iterator<String> iterator) {
-		try {
-			int count = 0;
-			while (iterator.hasNext()) {
-				System.out.println(iterator.next());
-				count++;
+    loop: while (true) {
+      String inputStr = Prompt.inputString("명령> ");
 
-				if ((count % 5) == 0 && Prompt.inputString(":").equalsIgnoreCase("q")) {
-					break;
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("history 명령 처리 중 오류 발생!");
-		}
-	}
+      if (inputStr.length() == 0) {
+        continue;
+      }
 
-	private static <T extends CsvObject> void saveObjects(Collection<T> list, File file) {
-		BufferedWriter out = null;
+      commandStack.push(inputStr);
+      commandQueue.offer(inputStr);
 
-		try {
-			out = new BufferedWriter(new FileWriter(file));
+      switch (inputStr) {
+        case "history":
+          printCommandHistory(commandStack.iterator());
+          break;
+        case "history2":
+          printCommandHistory(commandQueue.iterator());
+          break;
+        case "quit":
+        case "exit":
+          System.out.println("안녕!");
+          break loop;
+        default:
+          Command command = commandMap.get(inputStr);
+          if (command != null) {
+            try {
+              // 실행 중 오류가 발생할 수 있는 코드는 try 블록 안에 둔다.
+              command.execute();
+            } catch (Exception e) {
+              // 오류가 발생하면 그 정보를 갖고 있는 객체의 클래스 이름을 출력한다.
+              System.out.println("--------------------------------------------------------------");
+              System.out.printf("명령어 실행 중 오류 발생: %s\n", e);
+              System.out.println("--------------------------------------------------------------");
+            }
+          } else {
+            System.out.println("실행할 수 없는 명령입니다.");
+          }
+      }
+      System.out.println();
+    }
 
-			// 컬렉션 객체를 통째로 JSON 문자열로 내보내기
-			Gson gson = new Gson();
-			String jsonStr = gson.toJson(list);
-			out.write(jsonStr);
+    Prompt.close();
 
-			out.flush();
 
-			System.out.printf("총 %d 개의 객체를 '%s' 파일에 저장했습니다.\n", 
-					list.size(), file.getName());
 
-		} catch (IOException e) {
-			System.out.printf("객체를 '%s' 파일에  쓰는 중 오류 발생! - %s\n", 
-					file.getName(), e.getMessage());
+    notifyApplicationContextListenerOnServiceStopped();
+  }
 
-		} finally {
-			try {
-				out.close();
-			} catch (IOException e) {
-			}
-		}
-	}
 
-	// 파일에서 CSV 문자열을 읽어  객체를 생성한 후 컬렉션에 저장한다.
-	private static <T> void loadObjects(
-			Collection<T> list, // 객체를 담을 컬렉션 
-			File file, // JSON 문자열이 저장된 파일
-			Class<T[]> clazz // JSON 문자열을 어떤 타입의 배열로 만들 것인지 알려주는 클래스 정보
-			) {
-		BufferedReader in = null;
 
-		try {
-			in = new BufferedReader(new FileReader(file));
+  static void printCommandHistory(Iterator<String> iterator) {
+    try {
+      int count = 0;
+      while (iterator.hasNext()) {
+        System.out.println(iterator.next());
+        count++;
 
-			// 파일에서 모든 문자열을 읽어 StringBuilder에 담은 다음에 
-			// 최종적으로 String 객체를 꺼낸다.
-			StringBuilder strBuilder = new StringBuilder();
-			int b = 0;
-			while ((b = in.read()) != -1) {
-				strBuilder.append((char) b);
-			}
+        if ((count % 5) == 0 && Prompt.inputString(":").equalsIgnoreCase("q")) {
+          break;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("history 명령 처리 중 오류 발생!");
+    }
+  }
 
-			// JSON 문자열을 가지고 자바 객체를 생성한다.
-			Gson gson = new Gson();
-			T[] arr = gson.fromJson(strBuilder.toString(), clazz);
-			for (T obj : arr) {
-				list.add(obj);
-			}
 
-			System.out.printf("'%s' 파일에서 총 %d 개의 객체를 로딩했습니다.\n", 
-					file.getName(), list.size());
 
-		} catch (Exception e) {
-			System.out.printf("'%s' 파일 읽기 중 오류 발생! - %s\n",
-					file.getName(), e.getMessage());
 
-		} finally {
-			try {
-				in.close();
-			} catch (Exception e) {
-			}
-		}
-	}
 }
-
