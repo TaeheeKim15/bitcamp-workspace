@@ -5,7 +5,7 @@ class C2 {
   int v1 = 1;
 
   static void m1() {
-    // 스태틱 메서드는 C 인스턴스 주소를 변수가 없다.
+    // 스태틱 메서드는 C 인스턴스 주소를 담을 변수가 없다.
 
     class X {
       // 그래서 바깥 클래스의 인스턴스를 사용할 수 없다.
@@ -32,6 +32,8 @@ public class Exam0220 {
   public static void main(String[] args) {
     C2 c = new C2();
     c.m1();
+
+
   }
 
 }
