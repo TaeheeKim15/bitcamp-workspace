@@ -1,10 +1,11 @@
-// Executors 태스크 프레임워크 - 스레드풀 만들기 : 가변 크기 스레드풀
+// Executors 태스크 프레임워크 - 스레드풀 종료 대기 : awaitTermination()
 package com.eomcs.concurrent.ex7;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class Exam0220 {
+public class Exam0510 {
 
   static class MyRunnable implements Runnable {
     int millisec;
@@ -31,27 +32,23 @@ public class Exam0220 {
 
 
   public static void main(String[] args) throws Exception {
+    ExecutorService executorService = Executors.newFixedThreadPool(3);
 
-
-    // 스레드의 수를 고정하지 않고 필요할 때마다 스레드를 생성하는 스레드풀이다.
-    // 물론 작업을 끝낸 스레드는 다시 사용할 수 있도록 pool에 보관한다.
-    ExecutorService executorService = Executors.newCachedThreadPool();
-
-    // 놀고 잇는 스레드가 없으면 새 스레드를 생성한다.
-    //
     executorService.execute(new MyRunnable(6000));
-    executorService.execute(new MyRunnable(3000));
-    executorService.execute(new MyRunnable(9000));
     executorService.execute(new MyRunnable(2000));
-
-    // 작업을 끝낸 스레드가 생길 때까지 일부러 기다린다.
-    Thread.sleep(3000);
-
-    // 그러면 새 스레드를 생성하지 않고
-    // 작업을 끝낸 스레드가 요청한 작업을 처리한다.
-    //
     executorService.execute(new MyRunnable(4000));
+    executorService.execute(new MyRunnable(13000));
 
+    executorService.shutdown();
+
+    // 스레드풀의 모든 스레드가 종료되면 즉시 true를 리턴한다
+    // 만약 지정된 시간(예: 10초)이 경과할 때까지 종료되지 않았다면 false를 리턴한다
+    //
+    if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
+      System.out.println("아직 종료 안된 작업이 있다.");
+    } else {
+      System.out.println("모든 작업을 종료하였다. ");
+    }
 
     System.out.println("main() 종료!");
   }
