@@ -2,7 +2,7 @@ package com.eomcs.jdbc.ex01;
 
 import java.sql.DriverManager;
 
-public class Exam0110 {
+public class Exam0111 {
   public static void main(String[] args) {
 
 

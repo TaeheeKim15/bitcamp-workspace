@@ -2,18 +2,13 @@ package com.eomcs.jdbc.ex01;
 
 import java.sql.DriverManager;
 
-public class Exam0110 {
+public class Exam0141 {
   public static void main(String[] args) {
 
+    //  현재 jdbc.driver에 등록된 클래스 이름이 없다.
+    System.out.printf("jdbc.drivers=%s\n", System.getProperty("jdbc.driver"));
 
     try {
-      java.sql.Driver mariadbDriver = new org.mariadb.jdbc.Driver();
-      java.sql.Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
-      java.sql.Driver mssqlDriver = new com.microsoft.sqlserver.jdbc.SQLServerDriver();
-
-      DriverManager.registerDriver(mariadbDriver);
-      DriverManager.registerDriver(oracleDriver);
-      DriverManager.registerDriver(mssqlDriver);
 
       java.sql.Driver driver2 = DriverManager.getDriver("jdbc:mariadb://");
       System.out.println(driver2);
