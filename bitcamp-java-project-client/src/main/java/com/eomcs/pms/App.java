@@ -105,18 +105,18 @@ public class App {
 
     Map<String,Command> commandMap = new HashMap<>();
 
-    commandMap.put("/board/add", new BoardAddCommand(boardList));
-    commandMap.put("/board/list", new BoardListCommand(boardList));
-    commandMap.put("/board/detail", new BoardDetailCommand(boardList));
-    commandMap.put("/board/update", new BoardUpdateCommand(boardList));
-    commandMap.put("/board/delete", new BoardDeleteCommand(boardList));
+    commandMap.put("/board/add", new BoardAddCommand());
+    commandMap.put("/board/list", new BoardListCommand());
+    commandMap.put("/board/detail", new BoardDetailCommand());
+    commandMap.put("/board/update", new BoardUpdateCommand());
+    commandMap.put("/board/delete", new BoardDeleteCommand());
 
-    MemberListCommand memberListCommand = new MemberListCommand(memberList);
-    commandMap.put("/member/add", new MemberAddCommand(memberList));
-    commandMap.put("/member/list", memberListCommand);
-    commandMap.put("/member/detail", new MemberDetailCommand(memberList));
-    commandMap.put("/member/update", new MemberUpdateCommand(memberList));
-    commandMap.put("/member/delete", new MemberDeleteCommand(memberList));
+    MemberListCommand memberListCommand = new MemberListCommand();
+    commandMap.put("/member/add", new MemberAddCommand());
+    commandMap.put("/member/list", new MemberListCommand());
+    commandMap.put("/member/detail", new MemberDetailCommand());
+    commandMap.put("/member/update", new MemberUpdateCommand());
+    commandMap.put("/member/delete", new MemberDeleteCommand());
 
     commandMap.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
     commandMap.put("/project/list", new ProjectListCommand(projectList));

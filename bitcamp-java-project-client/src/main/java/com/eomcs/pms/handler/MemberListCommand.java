@@ -1,44 +1,46 @@
 package com.eomcs.pms.handler;
 
-import java.util.Iterator;
-import java.util.List;
-import com.eomcs.pms.domain.Member;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 public class MemberListCommand implements Command {
 
-  List<Member> memberList;
-
-  public MemberListCommand(List<Member> list) {
-    this.memberList = list;
-  }
 
   @Override
   public void execute() {
     System.out.println("[회원 목록]");
 
-    // 전체 목록을 조회할 때 `Iterator` 객체를 사용한다.
-    // 만약 목록의 일부만 조회하면다면 인덱스를 직접 다루는 이전 방식을 사용해야 한다.
-    Iterator<Member> iterator = memberList.iterator();
 
-    while (iterator.hasNext()) {
-      Member member = iterator.next();
-      System.out.printf("%d, %s, %s, %s, %s\n",
-          member.getNo(),
-          member.getName(),
-          member.getEmail(),
-          member.getTel(),
-          member.getRegisteredDate());
-    }
-  }
+    try (java.sql.Connection con = DriverManager.getConnection( //
+        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
 
-  public Member findByName(String name) {
-    for (int i = 0; i < memberList.size(); i++) {
-      Member member = memberList.get(i);
-      if (member.getName().equals(name)) {
-        return member;
+
+        PreparedStatement stmt = con.prepareStatement(
+            "select no, name, email, photo, tel, cdt"
+                + " from pms_member"
+                + " order by no desc");
+        // 공백이 없으면 안된다.
+        java.sql.ResultSet rs = stmt.executeQuery()) {
+
+      System.out.println("번호, 이름, 이메일, 사진, 전화번호, 등록일");
+
+      while(rs.next()) {
+        System.out.printf("%d, %s, %s, %s, %s, %s\n",
+            rs.getInt("no"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("photo"),
+            rs.getString("tel"),
+            rs.getString("cdt")
+            );
+
       }
+
+    } catch (Exception e) {
+      System.out.println("데이터 목록 조회 중 오류 발생!");
+      e.printStackTrace();
     }
-    return null;
+
   }
 
 }

@@ -22,21 +22,21 @@ public class BoardAddCommand implements Command {
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
 
         PreparedStatement stmt = con.prepareStatement(
-            "insert into x_board(title, content, writer) values(?,?,?)")) {
+            "insert into pms_board(title, content, writer) values(?,?,?)")) {
 
 
       stmt.setString(1, board.getTitle());
       stmt.setString(2, board.getContent());
       stmt.setString(3, board.getWriter());
-      stmt.executeUpdate();
+
 
       System.out.println("게시글을 등록하였습니다.");
+      stmt.executeUpdate();
+
 
     } catch (Exception e) {
       System.out.println("게시글 등록 중 오류 발생!");
       e.printStackTrace();
     }
-
-    System.out.println("게시글을 등록하였습니다.");
   }
 }
