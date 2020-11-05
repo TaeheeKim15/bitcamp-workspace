@@ -1,5 +1,6 @@
 package com.eomcs.pms;
 
+import java.sql.Connection;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -11,6 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.eomcs.context.ApplicationContextListener;
+import com.eomcs.pms.dao.BoardDao;
+import com.eomcs.pms.dao.MemberDao;
+import com.eomcs.pms.dao.ProjectDao;
+import com.eomcs.pms.dao.TaskDao;
+import com.eomcs.pms.dao.mariadb.BoardDaoImpl;
+import com.eomcs.pms.dao.mariadb.MemberDaoImpl;
+import com.eomcs.pms.dao.mariadb.ProjectDaoImpl;
+import com.eomcs.pms.dao.mariadb.TaskDaoImpl;
 import com.eomcs.pms.handler.BoardAddCommand;
 import com.eomcs.pms.handler.BoardDeleteCommand;
 import com.eomcs.pms.handler.BoardDetailCommand;
@@ -92,30 +101,37 @@ public class App {
 
     Map<String,Command> commandMap = new HashMap<>();
 
-    commandMap.put("/board/add", new BoardAddCommand());
-    commandMap.put("/board/list", new BoardListCommand());
-    commandMap.put("/board/detail", new BoardDetailCommand());
-    commandMap.put("/board/update", new BoardUpdateCommand());
-    commandMap.put("/board/delete", new BoardDeleteCommand());
+    // AppInitListener 가 준비한 Connection 객체를 꺼낸다.
+    Connection con  = (Connection) context.get("con");
 
-    MemberListCommand memberListCommand = new MemberListCommand();
-    commandMap.put("/member/add", new MemberAddCommand());
-    commandMap.put("/member/list", memberListCommand);
-    commandMap.put("/member/detail", new MemberDetailCommand());
-    commandMap.put("/member/update", new MemberUpdateCommand());
-    commandMap.put("/member/delete", new MemberDeleteCommand());
+    BoardDao boardDao = new BoardDaoImpl(con);
+    MemberDao memberDao = new MemberDaoImpl(con);
+    ProjectDao projectDao = new ProjectDaoImpl(con);
+    TaskDao taskDao = new TaskDaoImpl(con);
 
-    commandMap.put("/project/add", new ProjectAddCommand(memberListCommand));
-    commandMap.put("/project/list", new ProjectListCommand());
-    commandMap.put("/project/detail", new ProjectDetailCommand());
-    commandMap.put("/project/update", new ProjectUpdateCommand(memberListCommand));
-    commandMap.put("/project/delete", new ProjectDeleteCommand());
+    commandMap.put("/board/add", new BoardAddCommand(boardDao, memberDao));
+    commandMap.put("/board/list", new BoardListCommand(boardDao));
+    commandMap.put("/board/detail", new BoardDetailCommand(boardDao));
+    commandMap.put("/board/update", new BoardUpdateCommand(boardDao));
+    commandMap.put("/board/delete", new BoardDeleteCommand(boardDao));
 
-    commandMap.put("/task/add", new TaskAddCommand(memberListCommand));
-    commandMap.put("/task/list", new TaskListCommand());
-    commandMap.put("/task/detail", new TaskDetailCommand());
-    commandMap.put("/task/update", new TaskUpdateCommand(memberListCommand));
-    commandMap.put("/task/delete", new TaskDeleteCommand());
+    commandMap.put("/member/add", new MemberAddCommand(memberDao));
+    commandMap.put("/member/list", new MemberListCommand(memberDao));
+    commandMap.put("/member/detail", new MemberDetailCommand(memberDao));
+    commandMap.put("/member/update", new MemberUpdateCommand(memberDao));
+    commandMap.put("/member/delete", new MemberDeleteCommand(memberDao));
+
+    commandMap.put("/project/add", new ProjectAddCommand(projectDao, memberDao));
+    commandMap.put("/project/list", new ProjectListCommand(projectDao));
+    commandMap.put("/project/detail", new ProjectDetailCommand(projectDao));
+    commandMap.put("/project/update", new ProjectUpdateCommand(projectDao, memberDao));
+    commandMap.put("/project/delete", new ProjectDeleteCommand(projectDao));
+
+    commandMap.put("/task/add", new TaskAddCommand(taskDao, projectDao, memberDao));
+    commandMap.put("/task/list", new TaskListCommand(taskDao));
+    commandMap.put("/task/detail", new TaskDetailCommand(taskDao));
+    commandMap.put("/task/update", new TaskUpdateCommand(taskDao, projectDao, memberDao));
+    commandMap.put("/task/delete", new TaskDeleteCommand(taskDao));
 
     commandMap.put("/hello", new HelloCommand());
 
