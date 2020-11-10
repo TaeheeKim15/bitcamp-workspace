@@ -26,6 +26,10 @@ public class ProjectDeleteCommand implements Command {
     }
 
     try {
+      // 프로젝트에 소속된 모든 작업 삭제하기
+      taskDao.deleteByProjectNo(no);
+
+      // 프로젝트 삭제하기
       if (projectDao.delete(no) == 0) {
         System.out.println("해당 번호의 프로젝트가 존재하지 않습니다.");
         return;

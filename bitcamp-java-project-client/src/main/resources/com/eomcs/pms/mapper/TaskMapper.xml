@@ -3,91 +3,77 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<!-- SQL 문 목록 
-namespace 속성
-- SQL 문을 가리킬 때 사용할 그룹명이다.
-- 보통 SQL을 사용하는 객체 이름으로 설정한다.
-- 즉 DAO 인터페이스 또는 클래스명으로 설정한다.
-- 그래야만 유지보수할 때 DAO와 연결된 SQL을 바로 찾을 수 있다.
-
--->
 <mapper namespace="TaskDao">
 
-<!--  
-  
-  <resultMap type="com.eomcs.pms.domain.Board" id="BoardMap">
+  <resultMap type="com.eomcs.pms.domain.Task" id="TaskMap">
     <id column="no"     property="no"/>
-    <result column="title"  property="title"/>
     <result column="content" property="content"/>
-    <result column="cdt"    property="registeredDate"/>
-    <result column="vw_cnt" property="viewCount"/>
+    <result column="deadline"    property="deadline"/>
+    <result column="project_no" property="projectNo"/>
+    <result column="status" property="status"/>
     
-      Member m = new Member();
-      m.setNo(rs.getInt("no"));
-      m.setName(rs.getString("name"));
-      b.setWriter(m);
-    <association property="writer" javaType="com.eomcs.pms.domain.Member">
-      <id column="writer_no"    property="no"/>
-      <result column="name"     property="name"/>
+    <result column="project_title" property="projectTitle"/>
+    
+    <association property="owner" javaType="com.eomcs.pms.domain.Member">
+      <id column="owner_no"    property="no"/>
+      <result column="owner_name"     property="name"/>
     </association>
+    
   </resultMap>
-
-
-  <select id="findAll" resultMap="BoardMap">
-    select 
-      b.no, 
-      b.title, 
-      b.cdt, 
-      b.vw_cnt, 
-      m.no writer_no, 
-      m.name
-    from 
-      pms_board b 
-      inner join pms_member m on b.writer=m.no
-    order by 
-      b.no desc
+    
+  <select id="findAll" resultMap="TaskMap">
+        select 
+        t.no, 
+        t.content, 
+        t.deadline, 
+        t.status, 
+        m.no owner_no, 
+        m.name owner_name
+        from 
+        pms_task t 
+        inner join pms_member m on t.owner=m.no
+        order by t.deadline asc
   </select>
   
-  <insert id="insert" parameterType="com.eomcs.pms.domain.Board">
-    insert into pms_board(title,content,writer) 
-    values(#{title}, #{content}, #{writer.no})
+  <insert id="insert" parameterType="com.eomcs.pms.domain.Task">
+     insert into pms_task(content,deadline,owner,project_no,status)
+      values(#{content},#{deadline},#{owner.no},#{projectNo},#{status})
   </insert>
-  
-  <select id="findByNo" 
-    parameterType="java.lang.Integer"
-    resultMap="BoardMap">
-          select
-            b.no,
-            b.title,
-            b.content,
-            b.cdt,
-            b.vw_cnt,
-            m.no writer_no,
-            m.name
-          from
-            pms_board b inner join pms_member m on b.writer=m.no
-          where b.no = #{kimtaehee}
-   </select>
-  
-  <update id="updateViewCount" parameterType="com.eomcs.pms.domain.Board">
-  update pms_board set
-    vw_cnt = vw_cnt + 1
-  where no = #{no}
+
+  <update id="update" parameterType="com.eomcs.pms.domain.Task">
+   update pms_task set
+    content = #{content},
+    deadline = #{deadline},
+    owner = #{owner.no},
+    project_no = #{projectNo},
+    status = #{status}
+   where no = #{no}
   </update>
-  
-  <update id="update" parameterType="com.eomcs.pms.domain.Board">
-  update pms_board set
-   title = #{title},
-   content = #{content}
-  where no = #{no}
-  </update>
-  
--->
-    
-  
+
+  <select id="findByNo" parameterType="java.lang.Integer" resultMap="TaskMap">
+   select
+    t.no,
+    t.content,
+    t.deadline,
+    t.status,
+    m.no owner_no,
+    m.name owner_name,
+    p.no project_no,
+    p.title project_title
+   from pms_task t
+    inner join pms_member m on t.owner=m.no
+    inner join pms_project p on t.project_no=p.no
+   where t.no = #{no}
+  </select>
+
   <delete id="deleteByProjectNo" parameterType="java.lang.Integer">
   delete from pms_task
   where project_no = #{projectNo}
+  </delete>
+  
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from pms_task
+  where no = #{no}
   </delete>
   
 </mapper>

@@ -87,6 +87,11 @@
   owner = #{owner.no}
   where no = #{no}
   </update>
+  
+  <delete id="delete" parameterType="java.lang.Integer">
+  delete from pms_project
+  where no=#{no}
+  </delete>
 
   
   </mapper>
