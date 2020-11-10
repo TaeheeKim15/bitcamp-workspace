@@ -24,7 +24,7 @@ public class TaskUpdateCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[작업 변경]");
 
     try {

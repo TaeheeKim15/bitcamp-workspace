@@ -18,7 +18,7 @@ public class BoardAddCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[게시물 등록]");
 
     try {
@@ -27,7 +27,7 @@ public class BoardAddCommand implements Command {
       board.setContent(Prompt.inputString("내용? "));
 
       // 로그인 사용자 정보 가져오기
-      Member loginUser = (Member)context.get("loginUser");
+      Member loginUser = (Member) context.get("loginUser");
       board.setWriter(loginUser);
 
       boardDao.insert(board);

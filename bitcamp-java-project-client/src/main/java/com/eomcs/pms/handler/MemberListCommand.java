@@ -13,7 +13,7 @@ public class MemberListCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[회원 목록]");
 
     try {

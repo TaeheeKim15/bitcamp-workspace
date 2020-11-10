@@ -12,7 +12,7 @@ public class TaskDeleteCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[작업 삭제]");
 
     try  {

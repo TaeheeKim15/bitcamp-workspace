@@ -14,7 +14,7 @@ public class BoardListCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[게시물 목록]");
     try {
       System.out.println("번호, 제목, 작성자, 등록일, 조회수");

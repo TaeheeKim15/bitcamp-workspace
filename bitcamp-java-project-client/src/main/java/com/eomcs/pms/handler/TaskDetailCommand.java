@@ -13,7 +13,7 @@ public class TaskDetailCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[작업 상세보기]");
 
     try {

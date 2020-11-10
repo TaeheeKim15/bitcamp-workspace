@@ -20,7 +20,7 @@ public class ProjectUpdateCommand implements Command {
   }
 
   @Override
-  public void execute(Map<String, Object> context) {
+  public void execute(Map<String,Object> context) {
     System.out.println("[프로젝트 변경]");
     int no = Prompt.inputInt("번호? ");
 
@@ -39,9 +39,6 @@ public class ProjectUpdateCommand implements Command {
           "시작일(%s)? ", project.getStartDate())));
       project.setEndDate(Prompt.inputDate(String.format(
           "종료일(%s)? ", project.getEndDate())));
-
-      Member loginUser = (Member)context.get("loginUser");
-      project.setOwner(loginUser);
 
       // 프로젝트에 참여할 회원 정보를 담는다.
       List<Member> members = new ArrayList<>();
