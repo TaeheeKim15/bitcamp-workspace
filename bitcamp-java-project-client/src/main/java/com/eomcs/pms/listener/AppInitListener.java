@@ -20,6 +20,7 @@ import com.eomcs.pms.handler.BoardAddCommand;
 import com.eomcs.pms.handler.BoardDeleteCommand;
 import com.eomcs.pms.handler.BoardDetailCommand;
 import com.eomcs.pms.handler.BoardListCommand;
+import com.eomcs.pms.handler.BoardSearchCommand;
 import com.eomcs.pms.handler.BoardUpdateCommand;
 import com.eomcs.pms.handler.Command;
 import com.eomcs.pms.handler.HelloCommand;
@@ -33,7 +34,9 @@ import com.eomcs.pms.handler.MemberUpdateCommand;
 import com.eomcs.pms.handler.ProjectAddCommand;
 import com.eomcs.pms.handler.ProjectDeleteCommand;
 import com.eomcs.pms.handler.ProjectDetailCommand;
+import com.eomcs.pms.handler.ProjectDetailSearchCommand;
 import com.eomcs.pms.handler.ProjectListCommand;
+import com.eomcs.pms.handler.ProjectSearchCommand;
 import com.eomcs.pms.handler.ProjectUpdateCommand;
 import com.eomcs.pms.handler.TaskAddCommand;
 import com.eomcs.pms.handler.TaskDeleteCommand;
@@ -69,6 +72,7 @@ public class AppInitListener implements ApplicationContextListener {
       commandMap.put("/board/detail", new BoardDetailCommand(boardDao));
       commandMap.put("/board/update", new BoardUpdateCommand(boardDao));
       commandMap.put("/board/delete", new BoardDeleteCommand(boardDao));
+      commandMap.put("/board/search", new BoardSearchCommand(boardDao));
 
       commandMap.put("/member/add", new MemberAddCommand(memberDao));
       commandMap.put("/member/list", new MemberListCommand(memberDao));
@@ -77,10 +81,12 @@ public class AppInitListener implements ApplicationContextListener {
       commandMap.put("/member/delete", new MemberDeleteCommand(memberDao));
 
       commandMap.put("/project/add", new ProjectAddCommand(projectDao, memberDao));
-      commandMap.put("/project/list", new ProjectListCommand(projectDao, memberDao));
+      commandMap.put("/project/list", new ProjectListCommand(projectDao));
       commandMap.put("/project/detail", new ProjectDetailCommand(projectDao));
       commandMap.put("/project/update", new ProjectUpdateCommand(projectDao, memberDao));
       commandMap.put("/project/delete", new ProjectDeleteCommand(projectDao, taskDao));
+      commandMap.put("/project/search", new ProjectSearchCommand(projectDao));
+      commandMap.put("/project/detailSearch", new ProjectDetailSearchCommand(projectDao));
 
       commandMap.put("/task/add", new TaskAddCommand(taskDao, projectDao, memberDao));
       commandMap.put("/task/list", new TaskListCommand(taskDao));

@@ -5,7 +5,7 @@
   
   <mapper namespace="MemberDao">
   
-  <resultMap type="com.eomcs.pms.domain.Member" id="MemberMap">
+  <resultMap type="member" id="MemberMap">
     <id column="no"           property="no"/>
     <result column="name"     property="name"/>
     <result column="email"    property="email"/>
@@ -27,13 +27,13 @@
         no desc
   </select>
   
-  <insert id="insert" parameterType="com.eomcs.pms.domain.Member">
+  <insert id="insert" parameterType="member">
   insert into pms_member(name,email,password,photo,tel)
   values(#{name}, #{email}, password(#{password}), #{photo}, #{tel})
   </insert>
   
   <select id="findByNo"
-  parameterType="java.lang.Integer"
+  parameterType="int"
   resultMap="MemberMap">
   select
     no,
@@ -47,7 +47,7 @@
   where no = #{no}
   </select>
   
-  <update id="update" parameterType="com.eomcs.pms.domain.Member">
+  <update id="update" parameterType="member">
           update pms_member set
              name = #{name},
              email = #{email},
@@ -57,13 +57,13 @@
            where no = #{no}
   </update>
   
-  <delete id = "delete" parameterType="java.lang.Integer">
+  <delete id = "delete" parameterType="int">
   delete from pms_member
   where no = #{no}
   </delete>
   
     <select id="findByName"
-    parameterType="java.lang.String"
+    parameterType="String"
     resultMap="MemberMap">
           select
            no, 
@@ -79,7 +79,7 @@
     </select>
     
     <select id="findByProjectNo"
-    parameterType="java.lang.Integer"
+    parameterType="int"
     resultMap="MemberMap">
      select 
        m.no,
@@ -94,7 +94,7 @@
       </select>
       
       <select id="findByEmailPassword"
-      parameterType="java.util.Map"
+      parameterType="map"
       resultMap="MemberMap">
             select no,
              name,
