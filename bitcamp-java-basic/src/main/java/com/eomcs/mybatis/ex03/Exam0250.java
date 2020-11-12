@@ -29,6 +29,8 @@ public class Exam0250 {
 
     Scanner keyScan = new Scanner(System.in);
 
+    // 빈 문자열을 split 하면 빈 문자열이 한개 담긴 하나의 배열이 생긴다
+    // 빈문자열은 하나의 문자열이기 때문에!
     System.out.print("조회할 게시물 번호들(예: 1 6 8 10; 최대 5개)? ");
     String[] values = keyScan.nextLine().split(" ");
 
@@ -37,6 +39,7 @@ public class Exam0250 {
       noList.add(value);
     }
     params.put("noList", noList);
+
 
     keyScan.close();
 
