@@ -94,8 +94,7 @@ public class TaskAddCommand implements Command {
       }
 
       // 작업 정보를 입력한다.
-      int count = taskDao.insert(task);
-      System.out.println(count);
+      taskDao.insert(task);
 
       System.out.println("작업을 등록했습니다.");
 

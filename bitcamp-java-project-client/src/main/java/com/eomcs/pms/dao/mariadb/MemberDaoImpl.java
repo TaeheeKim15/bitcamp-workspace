@@ -8,42 +8,38 @@ import com.eomcs.pms.domain.Member;
 
 public class MemberDaoImpl implements com.eomcs.pms.dao.MemberDao {
 
-
   SqlSessionFactory sqlSessionFactory;
 
   public MemberDaoImpl(SqlSessionFactory sqlSessionFactory) {
     this.sqlSessionFactory = sqlSessionFactory;
   }
 
-
   @Override
   public int insert(Member member) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       return sqlSession.insert("MemberDao.insert", member);
     }
   }
 
   @Override
   public int delete(int no) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       return sqlSession.delete("MemberDao.delete", no);
     }
   }
 
   @Override
   public Member findByNo(int no) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-      Member member = sqlSession.selectOne("MemberDao.findByNo", no);
-      return member;
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+      return sqlSession.selectOne("MemberDao.findByNo", no);
     }
   }
 
   @Override
   public Member findByName(String name) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       List<Member> members = sqlSession.selectList("MemberDao.findByName", name);
-      if(members.size() > 0) {
+      if (members.size() > 0) {
         return members.get(0);
       } else {
         return null;
@@ -53,30 +49,28 @@ public class MemberDaoImpl implements com.eomcs.pms.dao.MemberDao {
 
   @Override
   public List<Member> findAll() throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       return sqlSession.selectList("MemberDao.findAll");
     }
   }
 
   @Override
   public int update(Member member) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       return sqlSession.update("MemberDao.update", member);
     }
   }
 
   @Override
   public List<Member> findByProjectNo(int projectNo) throws Exception {
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-      List<Member> member = sqlSession.selectList("MemberDao.findByProjectNo", projectNo);
-      return member;
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+      return sqlSession.selectList("MemberDao.findByProjectNo", projectNo);
     }
   }
 
   @Override
   public Member findByEmailPassword(String email, String password) throws Exception {
-
-    HashMap<String, Object> map = new HashMap<>();
+    HashMap<String,Object> map = new HashMap<>();
     map.put("email", email);
     map.put("password", password);
 
@@ -85,6 +79,3 @@ public class MemberDaoImpl implements com.eomcs.pms.dao.MemberDao {
     }
   }
 }
-
-
-

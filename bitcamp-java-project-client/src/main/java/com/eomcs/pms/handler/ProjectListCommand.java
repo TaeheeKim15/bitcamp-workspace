@@ -27,7 +27,7 @@ public class ProjectListCommand implements Command {
           if (members.length() > 0) {
             members.append(",");
           }
-          members.append(member.getName()  );
+          members.append(member.getName());
         }
 
         System.out.printf("%d, %s, %s ~ %s, %s, [%s]\n",

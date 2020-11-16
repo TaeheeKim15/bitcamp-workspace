@@ -26,13 +26,15 @@ public class ProjectDetailSearchCommand implements Command {
       if (title.length() > 0) {
         keywords.put("title", title);
       }
+
       String owner = Prompt.inputString("관리자명? ");
       if (owner.length() > 0) {
         keywords.put("owner", owner);
       }
-      String ownerName = Prompt.inputString("팀원명? ");
-      if (ownerName.length() > 0) {
-        keywords.put("member", ownerName);
+
+      String member = Prompt.inputString("팀원명? ");
+      if (member.length() > 0) {
+        keywords.put("member", member);
       }
 
       List<Project> list = projectDao.findByDetailKeyword(keywords);
@@ -40,11 +42,11 @@ public class ProjectDetailSearchCommand implements Command {
 
       for (Project project : list) {
         StringBuilder members = new StringBuilder();
-        for (Member member : project.getMembers()) {
+        for (Member m : project.getMembers()) {
           if (members.length() > 0) {
             members.append(",");
           }
-          members.append(member.getName());
+          members.append(m.getName());
         }
 
         System.out.printf("%d, %s, %s ~ %s, %s, [%s]\n",

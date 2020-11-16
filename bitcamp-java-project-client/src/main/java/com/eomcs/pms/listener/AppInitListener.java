@@ -1,11 +1,8 @@
 package com.eomcs.pms.listener;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.eomcs.context.ApplicationContextListener;
 import com.eomcs.pms.dao.BoardDao;
@@ -44,6 +41,7 @@ import com.eomcs.pms.handler.TaskDetailCommand;
 import com.eomcs.pms.handler.TaskListCommand;
 import com.eomcs.pms.handler.TaskUpdateCommand;
 import com.eomcs.pms.handler.WhoamiCommand;
+import com.eomcs.util.SqlSessionFactoryProxy;
 
 public class AppInitListener implements ApplicationContextListener {
   @Override
@@ -52,17 +50,16 @@ public class AppInitListener implements ApplicationContextListener {
 
     // 시스템에서 사용할 객체를 준비한다.
     try {
-      Connection con = DriverManager.getConnection(
-          "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
-
-      SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(
-          Resources.getResourceAsStream("com/eomcs/pms/conf/mybatis-config.xml"));
+      // Mybatis 객체 준비
+      SqlSessionFactoryProxy sqlSessionFactory = new SqlSessionFactoryProxy(
+          new SqlSessionFactoryBuilder().build(
+              Resources.getResourceAsStream("com/eomcs/pms/conf/mybatis-config.xml")));
 
       // DAO 구현체 생성
       BoardDao boardDao = new BoardDaoImpl(sqlSessionFactory);
       MemberDao memberDao = new MemberDaoImpl(sqlSessionFactory);
       ProjectDao projectDao = new ProjectDaoImpl(sqlSessionFactory);
-      TaskDao taskDao = new TaskDaoImpl(con, sqlSessionFactory);
+      TaskDao taskDao = new TaskDaoImpl(sqlSessionFactory);
 
       // Command 구현체 생성 및 commandMap 객체 준비
       Map<String,Command> commandMap = new HashMap<>();
@@ -82,9 +79,9 @@ public class AppInitListener implements ApplicationContextListener {
 
       commandMap.put("/project/add", new ProjectAddCommand(projectDao, memberDao));
       commandMap.put("/project/list", new ProjectListCommand(projectDao));
-      commandMap.put("/project/detail", new ProjectDetailCommand(projectDao));
+      commandMap.put("/project/detail", new ProjectDetailCommand(projectDao, taskDao));
       commandMap.put("/project/update", new ProjectUpdateCommand(projectDao, memberDao));
-      commandMap.put("/project/delete", new ProjectDeleteCommand(projectDao, taskDao));
+      commandMap.put("/project/delete", new ProjectDeleteCommand(projectDao, taskDao, sqlSessionFactory));
       commandMap.put("/project/search", new ProjectSearchCommand(projectDao));
       commandMap.put("/project/detailSearch", new ProjectDetailSearchCommand(projectDao));
 
@@ -102,7 +99,6 @@ public class AppInitListener implements ApplicationContextListener {
 
       context.put("commandMap", commandMap);
 
-
     } catch (Exception e) {
       System.out.println("시스템이 사용할 객체를 준비하는 중에 오류 발생");
       e.printStackTrace();
@@ -112,12 +108,5 @@ public class AppInitListener implements ApplicationContextListener {
   @Override
   public void contextDestroyed(Map<String,Object> context) {
     System.out.println("프로젝트 관리 시스템(PMS)을 종료합니다!");
-
-    try {
-      Connection con = (Connection) context.get("con");
-      con.close();
-    } catch (Exception e) {
-      // 커넥션을 닫다가 오류가 발생하더라도 무시한다.
-    }
   }
 }
