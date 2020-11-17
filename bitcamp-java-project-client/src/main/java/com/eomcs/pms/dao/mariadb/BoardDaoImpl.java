@@ -53,9 +53,15 @@ public class BoardDaoImpl implements com.eomcs.pms.dao.BoardDao{
       return sqlSession.update("BoardDao.update", board);
     }
   }
+
+  @Override
+  public int insertMembers(Board board) throws Exception {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+      return sqlSession.insert("BoardDao.insertMembers", board);
+    }
+  }
+
 }
-
-
 
 
 

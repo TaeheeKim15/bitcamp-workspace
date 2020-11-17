@@ -1,20 +1,17 @@
 package com.eomcs.pms.handler;
 
 import java.util.Map;
-import com.eomcs.pms.dao.BoardDao;
-import com.eomcs.pms.dao.MemberDao;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
+import com.eomcs.pms.service.BoardService;
 import com.eomcs.util.Prompt;
 
 public class BoardAddCommand implements Command {
 
-  BoardDao boardDao;
-  MemberDao memberDao;
+  BoardService boardService;
 
-  public BoardAddCommand(BoardDao boardDao, MemberDao memberDao) {
-    this.boardDao = boardDao;
-    this.memberDao = memberDao;
+  public BoardAddCommand(BoardService boardService) {
+    this.boardService = boardService;
   }
 
   @Override

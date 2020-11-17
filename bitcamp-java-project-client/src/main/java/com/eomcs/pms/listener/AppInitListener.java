@@ -41,6 +41,8 @@ import com.eomcs.pms.handler.TaskDetailCommand;
 import com.eomcs.pms.handler.TaskListCommand;
 import com.eomcs.pms.handler.TaskUpdateCommand;
 import com.eomcs.pms.handler.WhoamiCommand;
+import com.eomcs.pms.service.BoardService;
+import com.eomcs.pms.service.DefaultBoardService;
 import com.eomcs.pms.service.DefaultMemberService;
 import com.eomcs.pms.service.DefaultProjectService;
 import com.eomcs.pms.service.DefaultTaskService;
@@ -68,6 +70,7 @@ public class AppInitListener implements ApplicationContextListener {
       TaskDao taskDao = new TaskDaoImpl(sqlSessionFactory);
 
       // 서비스 구현체 생성
+      BoardService boardService = new DefaultBoardService(boardDao);
       MemberService memberService = new DefaultMemberService(memberDao);
       ProjectService projectService = new DefaultProjectService(taskDao, projectDao, sqlSessionFactory);
       TaskService taskService = new DefaultTaskService(taskDao);
@@ -76,10 +79,10 @@ public class AppInitListener implements ApplicationContextListener {
       Map<String,Command> commandMap = new HashMap<>();
 
       commandMap.put("/board/add", new BoardAddCommand(boardDao, memberDao));
-      commandMap.put("/board/list", new BoardListCommand(boardDao));
+      commandMap.put("/board/list", new BoardListCommand(boardService));
       commandMap.put("/board/detail", new BoardDetailCommand(boardDao));
       commandMap.put("/board/update", new BoardUpdateCommand(boardDao));
-      commandMap.put("/board/delete", new BoardDeleteCommand(boardDao));
+      commandMap.put("/board/delete", new BoardDeleteCommand(boardService));
       commandMap.put("/board/search", new BoardSearchCommand(boardDao));
 
       commandMap.put("/member/add", new MemberAddCommand(memberDao));

@@ -1,6 +1,5 @@
 package com.eomcs.pms.dao.mariadb;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
@@ -66,7 +65,7 @@ public class ProjectDaoImpl implements com.eomcs.pms.dao.ProjectDao {
   @Override
   public int deleteMembers(int projectNo) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-      return sqlSession.delete("ProjectDao.delete", projectNo);
+      return sqlSession.delete("ProjectDao.deleteMembers", projectNo);
     }
   }
 
