@@ -2,25 +2,25 @@ package com.eomcs.pms.handler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Map;
 import com.eomcs.pms.domain.Member;
+import com.eomcs.pms.service.MemberService;
 import com.eomcs.util.Prompt;
 
 public class MemberUpdateCommand implements Command {
 
-  List<Member> memberList;
+  MemberService memberService;
 
-  public MemberUpdateCommand(List<Member> list) {
-    this.memberList = list;
+  public MemberUpdateCommand(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(PrintWriter out, BufferedReader in, Map<String,Object> context) {
     try {
-
       out.println("[회원 변경]");
-      int no = Prompt.inputInt("번호? " ,out, in);
-      Member member = findByNo(no);
+      int no = Prompt.inputInt("번호? ", out, in);
+      Member member = memberService.get(no);
 
       if (member == null) {
         out.println("해당 번호의 회원이 없습니다.");
@@ -28,14 +28,14 @@ public class MemberUpdateCommand implements Command {
       }
 
       String name = Prompt.inputString(
-          String.format("이름(%s)? ", member.getName()) ,out, in);
+          String.format("이름(%s)? ", member.getName()), out, in);
       String email = Prompt.inputString(
-          String.format("이메일(%s)? ", member.getEmail()) ,out, in);
-      String password = Prompt.inputString("암호? " ,out, in);
+          String.format("이메일(%s)? ", member.getEmail()), out, in);
+      String password = Prompt.inputString("암호? ", out, in);
       String photo = Prompt.inputString(
-          String.format("사진(%s)? ", member.getPhoto()) ,out, in);
+          String.format("사진(%s)? ", member.getPhoto()), out, in);
       String tel = Prompt.inputString(
-          String.format("전화(%s)? ", member.getTel()) ,out, in);
+          String.format("전화(%s)? ", member.getTel()), out, in);
 
       String response = Prompt.inputString("정말 변경하시겠습니까?(y/N) ", out, in);
       if (!response.equalsIgnoreCase("y")) {
@@ -49,20 +49,14 @@ public class MemberUpdateCommand implements Command {
       member.setPhoto(photo);
       member.setTel(tel);
 
+      memberService.add(member);
+
       out.println("회원을 변경하였습니다.");
+
     } catch (Exception e) {
-      out.printf("작업 처리 중 오류 발생 - %s\n", e.getMessage());
+      out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }
-
   }
 
-  private Member findByNo(int no) {
-    for (int i = 0; i < memberList.size(); i++) {
-      Member member = memberList.get(i);
-      if (member.getNo() == no) {
-        return member;
-      }
-    }
-    return null;
-  }
+
 }

@@ -2,33 +2,37 @@ package com.eomcs.pms.handler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import com.eomcs.pms.domain.Project;
+import com.eomcs.pms.service.ProjectService;
 
 public class ProjectListCommand implements Command {
 
-  List<Project> projectList;
+  ProjectService projectService;
 
-  public ProjectListCommand(List<Project> list) {
-    this.projectList = list;
+
+  public ProjectListCommand(ProjectService projectService) {
+    this.projectService = projectService;
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(PrintWriter out, BufferedReader in, Map<String,Object> context) {
     out.println("[프로젝트 목록]");
 
-    Iterator<Project> iterator = projectList.iterator();
-
-    while (iterator.hasNext()) {
-      Project project = iterator.next();
-      out.printf("%d, %s, %s, %s, %s, [%s]\n",
-          project.getNo(),
-          project.getTitle(),
-          project.getStartDate(),
-          project.getEndDate(),
-          project.getOwner(),
-          project.getMembers());
+    try {
+      List<Project> list = projectService.list();
+      for (Project project : list) {
+        out.printf("%d, %s, %s, %s, %s, [%s]\n",
+            project.getNo(),
+            project.getTitle(),
+            project.getStartDate(),
+            project.getEndDate(),
+            project.getOwner(),
+            project.getMembers());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }

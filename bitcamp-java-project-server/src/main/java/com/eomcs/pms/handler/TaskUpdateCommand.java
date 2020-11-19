@@ -21,7 +21,7 @@ public class TaskUpdateCommand implements Command {
   public void execute(PrintWriter out, BufferedReader in) {
     try {
       out.println("[작업 변경]");
-      int no = Prompt.inputInt("번호? " ,out, in);
+      int no = Prompt.inputInt("번호? ", out, in);
       Task task = findByNo(no);
 
       if (task == null) {
@@ -30,9 +30,9 @@ public class TaskUpdateCommand implements Command {
       }
 
       String content = Prompt.inputString(
-          String.format("내용(%s)? ", task.getContent()) ,out, in);
+          String.format("내용(%s)? ", task.getContent()), out, in);
       Date deadline = Prompt.inputDate(
-          String.format("마감일(%s)? ", task.getDeadline()) ,out, in);
+          String.format("마감일(%s)? ", task.getDeadline()), out, in);
       String stateLabel = null;
       switch (task.getStatus()) {
         case 1:
@@ -45,12 +45,12 @@ public class TaskUpdateCommand implements Command {
           stateLabel = "신규";
       }
       int status = Prompt.inputInt(
-          String.format("상태(%s)?\n0: 신규\n1: 진행중\n2: 완료\n> ", stateLabel) ,out, in);
+          String.format("상태(%s)?\n0: 신규\n1: 진행중\n2: 완료\n> ", stateLabel), out, in);
 
       String owner = null;
       while (true) {
         String name = Prompt.inputString(
-            String.format("담당자(%s)?(취소: 빈 문자열) ", task.getOwner()) ,out, in);
+            String.format("담당자(%s)?(취소: 빈 문자열) ", task.getOwner()), out, in);
 
         if (name.length() == 0) {
           out.println("작업 등록을 취소합니다.");
@@ -76,9 +76,8 @@ public class TaskUpdateCommand implements Command {
       out.println("작업을 변경하였습니다.");
 
     } catch (Exception e) {
-      out.printf("작업 처리 중 오류 발생 - %s\n", e.getMessage());
+      out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }
-
   }
 
   private Task findByNo(int no) {

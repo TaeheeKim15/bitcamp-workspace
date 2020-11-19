@@ -16,10 +16,9 @@ public class ProjectDeleteCommand implements Command {
 
   @Override
   public void execute(PrintWriter out, BufferedReader in) {
-
     try {
       out.println("[프로젝트 삭제]");
-      int no = Prompt.inputInt("번호? " ,out, in);
+      int no = Prompt.inputInt("번호? ", out, in);
       int index = indexOf(no);
 
       if (index == -1) {
@@ -37,7 +36,7 @@ public class ProjectDeleteCommand implements Command {
       out.println("프로젝트를 삭제하였습니다.");
 
     } catch (Exception e) {
-      out.printf("작업 처리 중 오류 발생 - %s\n", e.getMessage());
+      out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }
   }
 

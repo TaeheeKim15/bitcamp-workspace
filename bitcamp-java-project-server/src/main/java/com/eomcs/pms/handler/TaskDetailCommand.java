@@ -18,7 +18,7 @@ public class TaskDetailCommand implements Command {
   public void execute(PrintWriter out, BufferedReader in) {
     try {
       out.println("[작업 상세보기]");
-      int no = Prompt.inputInt("번호? " ,out, in);
+      int no = Prompt.inputInt("번호? ", out, in);
       Task task = findByNo(no);
 
       if (task == null) {
@@ -43,9 +43,8 @@ public class TaskDetailCommand implements Command {
       out.printf("담당자: %s\n", task.getOwner());
 
     } catch (Exception e) {
-      out.printf("작업 처리 중 오류 발생 - %s\n", e.getMessage());
+      out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }
-
   }
 
   private Task findByNo(int no) {
