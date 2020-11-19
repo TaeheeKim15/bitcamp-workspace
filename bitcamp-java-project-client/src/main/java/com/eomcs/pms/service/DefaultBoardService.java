@@ -33,4 +33,14 @@ public class DefaultBoardService implements BoardService {
   public int add(Board board) throws Exception {
     return boardDao.insert(board);
   }
+
+  @Override
+  public int update(Board board) throws Exception {
+    return boardDao.update(board);
+  }
+
+  @Override
+  public List<Board> list(String keyword) throws Exception {
+    return boardDao.findAll(keyword);
+  }
 }

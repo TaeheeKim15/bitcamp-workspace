@@ -78,12 +78,12 @@ public class AppInitListener implements ApplicationContextListener {
       // Command 구현체 생성 및 commandMap 객체 준비
       Map<String,Command> commandMap = new HashMap<>();
 
-      commandMap.put("/board/add", new BoardAddCommand(boardDao, memberDao));
+      commandMap.put("/board/add", new BoardAddCommand(boardService));
       commandMap.put("/board/list", new BoardListCommand(boardService));
-      commandMap.put("/board/detail", new BoardDetailCommand(boardDao));
-      commandMap.put("/board/update", new BoardUpdateCommand(boardDao));
+      commandMap.put("/board/detail", new BoardDetailCommand(boardService));
+      commandMap.put("/board/update", new BoardUpdateCommand(boardService));
       commandMap.put("/board/delete", new BoardDeleteCommand(boardService));
-      commandMap.put("/board/search", new BoardSearchCommand(boardDao));
+      commandMap.put("/board/search", new BoardSearchCommand(boardService));
 
       commandMap.put("/member/add", new MemberAddCommand(memberDao));
       commandMap.put("/member/list", new MemberListCommand(memberDao));

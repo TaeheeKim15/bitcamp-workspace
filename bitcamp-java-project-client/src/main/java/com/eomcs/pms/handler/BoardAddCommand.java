@@ -27,7 +27,7 @@ public class BoardAddCommand implements Command {
       Member loginUser = (Member) context.get("loginUser");
       board.setWriter(loginUser);
 
-      boardDao.insert(board);
+      boardService.add(board);
       System.out.println("게시글을 등록하였습니다.");
 
     } catch (Exception e) {

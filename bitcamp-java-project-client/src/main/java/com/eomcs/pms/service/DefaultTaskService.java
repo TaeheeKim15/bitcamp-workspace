@@ -2,6 +2,7 @@ package com.eomcs.pms.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.eomcs.pms.dao.TaskDao;
 import com.eomcs.pms.domain.Task;
 
@@ -18,6 +19,12 @@ public class DefaultTaskService implements TaskService {
     HashMap<String,Object> map = new HashMap<>();
     map.put("projectNo", projectNo);
     return taskDao.findAll(map);
+  }
+
+  @Override
+  public List<Task> list(Map<String, Object> keywords) throws Exception {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
