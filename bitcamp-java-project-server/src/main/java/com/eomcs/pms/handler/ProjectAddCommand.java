@@ -11,19 +11,26 @@ import com.eomcs.pms.service.MemberService;
 import com.eomcs.pms.service.ProjectService;
 import com.eomcs.util.Prompt;
 
+@CommandAnno("/project/add")
 public class ProjectAddCommand implements Command {
 
   ProjectService projectService;
   MemberService memberService;
 
-
-  public ProjectAddCommand(ProjectService projectService, MemberService memberService) {
+  public ProjectAddCommand(
+      ProjectService projectService,
+      MemberService memberService) {
     this.projectService = projectService;
     this.memberService = memberService;
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in, Map<String,Object> context) {
+  public void execute(Request request) {
+    PrintWriter out = request.getWriter();
+    BufferedReader in = request.getReader();
+    Map<String,Object> session = request.getSession();
+
+
     try {
       out.println("[프로젝트 등록]");
 
@@ -33,8 +40,7 @@ public class ProjectAddCommand implements Command {
       project.setStartDate(Prompt.inputDate("시작일? ", out, in));
       project.setEndDate(Prompt.inputDate("종료일? ", out, in));
 
-
-      Member loginUser = (Member) context.get("loginUser");
+      Member loginUser = (Member) session.get("loginUser");
       project.setOwner(loginUser);
 
       // 프로젝트에 참여할 회원 정보를 담는다.
@@ -46,7 +52,7 @@ public class ProjectAddCommand implements Command {
         } else {
           List<Member> list = memberService.list(name);
           if (list.size() == 0) {
-            System.out.println("등록된 회원이 아닙니다.");
+            out.println("등록된 회원이 아닙니다.");
             continue;
           }
           members.add(list.get(0));
@@ -55,10 +61,11 @@ public class ProjectAddCommand implements Command {
       project.setMembers(members);
 
       projectService.add(project);
-      System.out.println("프로젝트가 등록되었습니다!");
+      out.println("프로젝트가 등록되었습니다!");
 
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
+      e.printStackTrace();
     }
   }
 }

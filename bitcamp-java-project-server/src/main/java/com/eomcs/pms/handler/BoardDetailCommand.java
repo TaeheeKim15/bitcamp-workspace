@@ -2,12 +2,11 @@ package com.eomcs.pms.handler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.Map;
 import com.eomcs.pms.domain.Board;
-import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.BoardService;
 import com.eomcs.util.Prompt;
 
+@CommandAnno("/board/detail")
 public class BoardDetailCommand implements Command {
 
   BoardService boardService;
@@ -17,10 +16,13 @@ public class BoardDetailCommand implements Command {
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in, Map<String,Object> context) {
+  public void execute(Request request) {
+    PrintWriter out = request.getWriter();
+    BufferedReader in = request.getReader();
     try {
       out.println("[게시물 상세보기]");
       int no = Prompt.inputInt("번호? ", out, in);
+
       Board board = boardService.get(no);
 
       if (board == null) {
@@ -28,21 +30,15 @@ public class BoardDetailCommand implements Command {
         return;
       }
 
-      board.setViewCount(board.getViewCount() + 1);
-
       out.printf("제목: %s\n", board.getTitle());
       out.printf("내용: %s\n", board.getContent());
-      Member loginUser = (Member) context.get("loginUser");
-      board.setWriter(loginUser);
+      out.printf("작성자: %s\n", board.getWriter().getName());
       out.printf("등록일: %s\n", board.getRegisteredDate());
       out.printf("조회수: %d\n", board.getViewCount());
 
-      boardService.get(no);
-
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
+      e.printStackTrace();
     }
   }
-
-
 }

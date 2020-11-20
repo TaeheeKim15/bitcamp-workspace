@@ -1,25 +1,32 @@
 package com.eomcs.pms.handler;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
+import javax.servlet.GenericServlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.service.BoardService;
 
-public class BoardListCommand implements Command {
-
-  BoardService boardService;
-
-  public BoardListCommand(BoardService boardService) {
-    this.boardService = boardService;
-  }
-
+@WebServlet("/board/list")
+public class BoardListCommand extends GenericServlet {
+  private static final long serialVersionUID = 1L;
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in, Map<String,Object> context) {
-    out.println("[게시물 목록]");
+  public void service(ServletRequest request, ServletResponse response)
+      throws ServletException, IOException {
+
+    ServletContext ctx = request.getServletContext();
+    BoardService boardService = (BoardService) ctx.getAttribute("boardService");
+
+    response.setContentType("text/plain;charset=UTF-8");
+    PrintWriter out = response.getWriter();
     try {
+      out.println("[게시물 목록]");
 
       List<Board> list = boardService.list();
 
@@ -29,11 +36,12 @@ public class BoardListCommand implements Command {
         out.printf("%d, %s, %s, %s, %d\n",
             board.getNo(),
             board.getTitle(),
-            board.getWriter(),
+            board.getWriter().getName(),
             board.getRegisteredDate(),
             board.getViewCount());
       }
     } catch (Exception e) {
+      out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
       e.printStackTrace();
     }
   }

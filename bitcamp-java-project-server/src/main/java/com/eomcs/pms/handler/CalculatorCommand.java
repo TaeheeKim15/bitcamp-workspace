@@ -8,7 +8,9 @@ import com.eomcs.util.Prompt;
 public class CalculatorCommand implements Command {
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(Request request) {
+    PrintWriter out = request.getWriter();
+    BufferedReader in = request.getReader();
     try {
       out.println("[계산기]");
 
