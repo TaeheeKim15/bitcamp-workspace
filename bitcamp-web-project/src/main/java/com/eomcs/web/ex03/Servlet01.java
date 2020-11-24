@@ -22,7 +22,10 @@ public class Servlet01 extends GenericServlet {
     // 기본이 영어 문자로 간주하여 아스키 코드(ASCII)로 변환하여 출력한다.
     // 자바(Unicode2;UTF-16) ===> 출력문자(ASCII)
     PrintWriter out = res.getWriter();
+    // 다음 영어 유니코드 문자는 ISO-8859-1 문자표에 있기 때문에 제대로 변환된다.
     out.println("Hello!");
+
+    // 그러나 다음 유니코드는 없기 때문에 없다는 의미로 ? 가 작성된다.
     out.println("안녕하세요!");
     out.println("こんにちは");
     out.println("您好");

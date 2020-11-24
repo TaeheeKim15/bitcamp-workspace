@@ -19,12 +19,18 @@ public class Servlet02 extends GenericServlet {
       throws ServletException, IOException {
 
     // 한글 깨짐 처리하기
-    // => 출력 스트림을 꺼내기 전에 출력할 때 사용할 문자표(charset)를 지정하라.
+    // => 출력 스트림을 꺼내기 전에
+    //    출력할 때 사용할 문자표(charset)를 지정하라.
     // => 반드시 출력 스트림을 얻기 전에 설정해야 한다.
-    // res.setContentType("MIME Type;charset=문자표이름");
+    //    res.setContentType("MIME Type;charset=문자표이름");
     //
     res.setContentType("text/plain;charset=UTF-8"); // UCS2(UTF-16) ==> UTF-8
     PrintWriter out = res.getWriter();
+
+    // 한글이나 일본 문자, 중국문자, 아랍문자는
+    // UTF-8 문자표에 정의되어 있기 때문에
+    // UTF-8 문자로 변활할 수 있다.
+    //
     out.println("Hello!");
     out.println("안녕하세요!");
     out.println("こんにちは");

@@ -35,6 +35,8 @@ public class Servlet04 extends GenericServlet {
     // => 웹 브라우저가 모르는 형식을 지정하면 웹 브라우저는 처리하지 못하기 때문에
     // 그냥 다운로드 대화상자를 띄운다.
     res.setContentType("image/jpeg");
+    // MINE 타입을 실수하면 download 화면이 뜬다
+    // 웹 브라우저가 다룰 수 없는 데이터 타입은 저렇게 된다.
 
     BufferedOutputStream out = new BufferedOutputStream(res.getOutputStream());
 
