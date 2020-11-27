@@ -36,7 +36,7 @@ public class BoardDetailServlet extends HttpServlet {
     out.println("<head><title>게시글상세</title></head>");
     out.println("<body>");
     try {
-      out.println("<h1>게시물 목록</h1>");
+      out.println("<h1>게시물 상세</h1>");
 
       Board board = boardService.get(no);
 
@@ -44,12 +44,21 @@ public class BoardDetailServlet extends HttpServlet {
         out.println("해당 번호의 게시글이 없습니다.");
         return;
       }
-
-      out.printf("제목: %s<br>\n", board.getTitle());
-      out.printf("내용: %s<br>\n", board.getContent());
+      out.println("<form action='update' method='post'>");
+      out.printf("번호: <input type='text' name='no' value='%d' readonly><br>\n",
+          board.getNo());
+      out.printf("제목: <input type='text' name='title' value='%s'><br>\n",
+          board.getTitle());
+      out.printf("내용: <textarea name='content'>%s</textarea><br>\n",
+          board.getContent());
       out.printf("작성자: %s<br>\n", board.getWriter().getName());
       out.printf("등록일: %s<br>\n", board.getRegisteredDate());
       out.printf("조회수: %d<br>\n", board.getViewCount());
+      out.println("<p>");
+      out.println("<button>변경</button>");
+      out.println("<a href='delete?no=%d'>삭제</a>");
+      out.println("</p>");
+      out.println("</form>");
 
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
