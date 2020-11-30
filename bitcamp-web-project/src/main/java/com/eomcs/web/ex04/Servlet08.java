@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import net.coobird.thumbnailator.ThumbnailParameter;
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import net.coobird.thumbnailator.name.Rename;
 
 @MultipartConfig(maxFileSize = 1024 * 1024 * 10)
@@ -73,28 +74,31 @@ public class Servlet08 extends GenericServlet {
     // .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
 
     Thumbnails.of(this.uploadDir + "/" + filename)//
-        .size(20, 20)//
-        .outputFormat("jpg")//
-        .toFiles(new Rename() {
-          @Override
-          public String apply(String name, ThumbnailParameter param) {
-            return name + "_20x20";
-          }
-        });
+    .size(20, 20)//
+    .outputFormat("jpg")//
+    .toFiles(new Rename() {
+      @Override
+      public String apply(String name, ThumbnailParameter param) {
+        return name + "_20x20";
+      }
+    });
+
+    // 선택사항이 아니라 필수입니다
+    Thumbnails.of(this.uploadDir + "/" + filename)//
+    .size(80, 80)//
+    .outputFormat("jpg") //
+    .crop(Positions.CENTER)
+    .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
 
     Thumbnails.of(this.uploadDir + "/" + filename)//
-        .size(80, 80)//
-        .outputFormat("jpg") //
-        .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+    .size(160, 160) //
+    .outputFormat("jpg") //
+    .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
 
-    Thumbnails.of(this.uploadDir + "/" + filename)//
-        .size(160, 160) //
-        .outputFormat("jpg") //
-        .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
-
+    // out.printf("<img src='../upload/%s' height='80'><br>\n", filename);
     out.printf("사진=%s<br>\n", filename);
     out.printf("<img src='../upload/%s_20x20.jpg'><br>\n", filename);
-    out.printf("<img src='../upload/%s' height='80'><br>\n", filename);
+    out.printf("<img src='../upload/%s_80x80.jpg'><br>\n", filename);
     out.printf("<img src='../upload/%s'><br>\n", filename);
     out.println("</body></html>");
   }

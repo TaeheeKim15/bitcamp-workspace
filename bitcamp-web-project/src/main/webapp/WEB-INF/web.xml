@@ -28,6 +28,16 @@
   </context-param>
 -->
 
+
+<context-param>
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+</context-param>
+
+<context-param>
+<param-name>aaa</param-name>
+<param-value>hohoho</param-value>
+</context-param>
 <!-- 리스너 등록 -->
 <!--
   <listener>
@@ -48,6 +58,26 @@
     <url-pattern>/ex02/s1</url-pattern>
   </filter-mapping>
 -->
+<!-- 
+
+<filter>
+<filter-name>f1</filter-name>
+  <filter-class>com.eomcs.web.ex06.Filter01</filter-class>
+<init-param>
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+</init-param>
+<init-param>
+<param-name>aaa</param-name>
+<param-value>okok</param-value>
+</init-param>
+</filter>
+<filter-mapping>
+  <filter-name>f1</filter-name>
+  <url-pattern>/ex05/*</url-pattern>
+</filter-mapping>
+ -->
+
 <!-- 서블릿 등록 -->
   <servlet>
     <servlet-name>s01</servlet-name>
