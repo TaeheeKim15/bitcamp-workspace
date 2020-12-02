@@ -24,7 +24,6 @@ public class BoardDetailServlet extends HttpServlet {
         (BoardService) ctx.getAttribute("boardService");
 
     // 웹주소에 동봉된 데이터(Query String: qs)를 읽는다.
-    int no = Integer.parseInt(request.getParameter("no"));
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -35,11 +34,16 @@ public class BoardDetailServlet extends HttpServlet {
     out.println("<body>");
     try {
       out.println("<h1>게시물 조회</h1>");
+      int no = Integer.parseInt(request.getParameter("no"));
 
       Board board = boardService.get(no);
 
       if (board == null) {
         out.println("<p>해당 번호의 게시글이 없습니다.</p>");
+        // 이걸 refresh 안하고 forwarding하는 경우가 있는 데 용서받지 못할 짓이다
+        // 화면 상으로는 목록이 나오는 게 맞지만, 잘 못 실행했으면 알려주고 다시 리스트를 요청해야
+        // 되기 때문이야~~~~!
+
         response.setHeader("Refresh", "2;url=list");
       }  else {
 
