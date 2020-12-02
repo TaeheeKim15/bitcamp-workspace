@@ -32,11 +32,22 @@ public class Servlet01 extends HttpServlet {
     // => + 문자의 URL 인코딩 값은?
     // %2b
     // => 따라서 + 연산을 파라미터 값으로 보내려면
+    //    더하기는 url에서 공백을 의미하는 url 문자를 의미한다
     // http://localhost:8080/java-web/ex07/s1?a=100&b=200&op=%2b
     //
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
+    // 명심
+    // => 서블릿의 PrintWrite 객체를 통해 값을 출력하면
+    //    클라이언트로 바로 출력되는 것이 아니라,
+    //    내부의 마련된 버퍼로 출력된다.
+    // => 그럼 출력 결과는 언제?
+    //    service() 메서드 호출이 끝났을 때 버퍼의 내용이 클라이언트로 출력된다
+    // => 만약 버퍼가 꽉 차면, service() 메서드 호출이 끝나기 전에 자동으로 출력된다.
+    //
+    //    따라서 다음 출력코드는 버퍼로 값을 출력하는 것이다
+    //    아직 클라이언트로 보낸 상태가 아니다.
     out.println("더하기 계산 결과:");
 
     String op = request.getParameter("op");
@@ -57,7 +68,15 @@ public class Servlet01 extends HttpServlet {
       // 이 서블릿이 출력한 내용을 취소할 수 있는 것이다.
       요청배달자.forward(request, response);
 
+
       System.out.println("ex07/Servlet01!!!");
+      // 포워딩 한 후 리턴되는 지 알아보자
+      // 다음 출력이 서버 콘솔창에 보인다면 포워딩 후에 리턴됨을 알 수 있다.
+
+      // 그러면 포워딩 서블릿에서 다시 원래 서블릿으로 돌아온 후에
+      // 클라이언트로 출력한다면 ?
+      out.println("어떻게 될까?");
+
       // 포워딩 한 서블릿을 실행한 후 리턴된다.
       // 단 리턴된 후에 출력하는 것은 모두 무시된다.
       // 따라서 포워딩 후에 리턴되면 하위의 코드를 실행하지 않고

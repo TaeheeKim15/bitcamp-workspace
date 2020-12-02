@@ -15,9 +15,7 @@ import com.eomcs.pms.service.MemberService;
 
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
-
   private static final long serialVersionUID = 1L;
-
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,12 +30,12 @@ public class MemberListServlet extends HttpServlet {
 
     out.println("<!DOCTYPE html>");
     out.println("<html>");
-    out.println("<head><title>회원 목록</title></head>");
+    out.println("<head><title>회원목록</title></head>");
     out.println("<body>");
     try {
       out.println("<h1>회원 목록</h1>");
 
-      out.println("<a href='form.html'>새 회원</a>");
+      out.println("<a href='form.html'>새 회원</a><br>");
 
       List<Member> list = memberService.list();
 
@@ -55,7 +53,7 @@ public class MemberListServlet extends HttpServlet {
       for (Member member : list) {
         out.printf("<tr>"
             + "<td>%d</td>"
-            + "<td><a href='detail?no=%1$d'><img src='%s' alt='[%2$s]'>%s</a></td>"
+            + "<td><a href='detail?no=%1$d'><img src='../upload/%s_30x30.jpg' alt='[%2$s]'>%s</a></td>"
             + "<td>%s</td>"
             + "<td>%s</td>"
             + "<td>%s</td>"
@@ -67,16 +65,19 @@ public class MemberListServlet extends HttpServlet {
             member.getTel(),
             member.getRegisteredDate());
       }
-      out.println("</tbody></table>");
+      out.println("</tbody>");
+      out.println("</table>");
 
     } catch (Exception e) {
-      out.printf("<p>작업 처리 중 오류 발생! - %s</p>\n", e.getMessage());
+      out.println("<h2>작업 처리 중 오류 발생!</h2>");
+      out.printf("<pre>%s</pre>\n", e.getMessage());
 
       StringWriter errOut = new StringWriter();
       e.printStackTrace(new PrintWriter(errOut));
-
+      out.println("<h3>상세 오류 내용</h3>");
       out.printf("<pre>%s</pre>\n", errOut.toString());
     }
+
     out.println("</body>");
     out.println("</html>");
   }

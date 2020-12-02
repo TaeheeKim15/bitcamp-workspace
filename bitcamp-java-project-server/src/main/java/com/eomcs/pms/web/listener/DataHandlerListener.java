@@ -24,8 +24,6 @@ import com.eomcs.pms.service.ProjectService;
 import com.eomcs.pms.service.TaskService;
 import com.eomcs.util.SqlSessionFactoryProxy;
 
-
-// 게시물, 회원, 프로젝트, 작업 데이터를 파일에서 로딩하고 파일로 저장하는 일을 한다.
 @WebListener
 public class DataHandlerListener implements ServletContextListener {
 
@@ -63,5 +61,5 @@ public class DataHandlerListener implements ServletContextListener {
       e.printStackTrace();
     }
   }
-}
 
+}

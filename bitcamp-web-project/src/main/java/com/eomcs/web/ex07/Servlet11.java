@@ -19,6 +19,7 @@ public class Servlet11 extends HttpServlet {
       throws ServletException, IOException {
 
     // 테스트 방법:
+
     // => http://localhost:8080/java-web/ex07/s11?a=100&b=200&op=%2b
     // => http://localhost:8080/java-web/ex07/s11?a=100&b=200&op=-
     // => http://localhost:8080/java-web/ex07/s11?a=100&b=200&op=*
@@ -41,7 +42,7 @@ public class Servlet11 extends HttpServlet {
     }
 
     // 다른 서블릿을 실행시킨다.
-    // => forward()는 다른 서블릿으로 위임할 때 현재 서블릿의 출력이 취소된다.
+    // => forward()는 다른 서블릿으로 위임할 때 현재 서블릿의 출력을 취소한다
     // => include()는 다른 서블릿으로 실행을 위임하더라도
     // 현재 서블릿의 실행 결과를 유지한다.
     // => 인클루드의 경우 현재 서블릿에서 setContentType()을 설정해야 한다.

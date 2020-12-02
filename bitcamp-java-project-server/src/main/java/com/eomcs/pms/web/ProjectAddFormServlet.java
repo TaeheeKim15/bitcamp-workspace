@@ -31,8 +31,9 @@ public class ProjectAddFormServlet extends HttpServlet {
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
-    out.println("<title>프로젝트 생성</title></head>");
+    out.println("<title>프로젝트생성</title></head>");
     out.println("<body>");
+
     try {
       out.println("<h1>프로젝트 생성</h1>");
 
@@ -40,7 +41,7 @@ public class ProjectAddFormServlet extends HttpServlet {
       out.println("프로젝트명: <input type='text' name='title'><br>");
       out.println("내용: <textarea name='content' rows='10' cols='60'></textarea><br>");
       out.println("기간: <input type='date' name='startDate'> ~ ");
-      out.println("<input type='date' name='endDate'><br>");
+      out.println("      <input type='date' name='endDate'><br>");
       out.println("팀원: <br>");
       out.println("<ul>");
 
@@ -51,18 +52,17 @@ public class ProjectAddFormServlet extends HttpServlet {
             m.getName());
       }
 
-      out.println("</ul>");
+      out.println("</ul><br>");
       out.println("<button>생성</button>");
       out.println("</form>");
 
-
-
     } catch (Exception e) {
-      out.printf("<p>작업 처리 중 오류 발생! - %s</p>\n", e.getMessage());
+      out.println("<h2>작업 처리 중 오류 발생!</h2>");
+      out.printf("<pre>%s</pre>\n", e.getMessage());
 
       StringWriter errOut = new StringWriter();
       e.printStackTrace(new PrintWriter(errOut));
-
+      out.println("<h3>상세 오류 내용</h3>");
       out.printf("<pre>%s</pre>\n", errOut.toString());
     }
 

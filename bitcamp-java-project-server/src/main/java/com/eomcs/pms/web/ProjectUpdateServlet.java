@@ -12,13 +12,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.service.ProjectService;
 
-@WebServlet("/project/add")
-public class ProjectAddServlet extends HttpServlet {
+@WebServlet("/project/update")
+public class ProjectUpdateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
@@ -36,38 +35,35 @@ public class ProjectAddServlet extends HttpServlet {
     out.println("<html>");
     out.println("<head>");
     out.println("<meta http-equiv='Refresh' content='1;url=list'>");
-    out.println("<title>프로젝트생성</title></head>");
+    out.println("<title>프로젝트변경</title></head>");
     out.println("<body>");
 
     try {
-      out.println("<h1>프로젝트 생성</h1>");
+      out.println("<h1>프로젝트 변경</h1>");
 
       Project project = new Project();
+      project.setNo(Integer.parseInt(request.getParameter("no")));
       project.setTitle(request.getParameter("title"));
       project.setContent(request.getParameter("content"));
       project.setStartDate(Date.valueOf(request.getParameter("startDate")));
       project.setEndDate(Date.valueOf(request.getParameter("endDate")));
-
-      HttpSession session = request.getSession();
-      Member loginUser = (Member) session.getAttribute("loginUser");
-      project.setOwner(loginUser);
 
       // 프로젝트에 참여할 회원 정보를 담는다.
       List<Member> members = new ArrayList<>();
       String[] memberNoList = request.getParameterValues("members");
       if (memberNoList != null) {
         for (String memberNo : memberNoList) {
-          //          Member member = new Member();
-          //          member.setNo(Integer.parseInt(memberNo));
-          //          members.add(member);
           members.add(new Member().setNo(Integer.parseInt(memberNo)));
         }
       }
       project.setMembers(members);
 
-      projectService.add(project);
+      if (projectService.update(project) == 0) {
+        out.println("<p>해당 프로젝트가 존재하지 않습니다.</p>");
 
-      out.println("<p>프로젝트가 등록되었습니다!</p>");
+      } else {
+        out.println("<p>프로젝트를 변경하였습니다.</p>");
+      }
 
     } catch (Exception e) {
       out.println("<h2>작업 처리 중 오류 발생!</h2>");

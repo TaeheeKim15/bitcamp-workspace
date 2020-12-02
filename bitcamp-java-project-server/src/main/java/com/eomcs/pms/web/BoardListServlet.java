@@ -35,9 +35,12 @@ public class BoardListServlet extends HttpServlet {
     try {
       out.println("<h1>게시물 목록</h1>");
 
-      out.println("<a href='form.html'>새 글</a>");
+      out.println("<a href='form.html'>새 글</a><br>");
 
-      List<Board> list = boardService.list();
+      String keyword = request.getParameter("keyword");
+
+      List<Board> list = boardService.list(keyword);
+
       out.println("<table border='1'>");
       out.println("<thead><tr>" // table row
           + "<th>번호</th>" // table header
@@ -48,6 +51,7 @@ public class BoardListServlet extends HttpServlet {
           + "</tr></thead>");
 
       out.println("<tbody>");
+
       for (Board board : list) {
         out.printf("<tr>"
             + "<td>%d</td>"
@@ -65,14 +69,24 @@ public class BoardListServlet extends HttpServlet {
       out.println("</tbody>");
       out.println("</table>");
 
+      out.println("<p>");
+      out.println("<form action='list' method='get'>");
+      out.printf("검색어: <input type='text' name='keyword' value='%s'>\n",
+          keyword != null ? keyword : "");
+      out.println("<button>검색</button>");
+      out.println("</form>");
+      out.println("</p>");
+
     } catch (Exception e) {
-      out.printf("<p>작업 처리 중 오류 발생! - %s</p>\n", e.getMessage());
+      out.println("<h2>작업 처리 중 오류 발생!</h2>");
+      out.printf("<pre>%s</pre>\n", e.getMessage());
 
       StringWriter errOut = new StringWriter();
       e.printStackTrace(new PrintWriter(errOut));
-
+      out.println("<h3>상세 오류 내용</h3>");
       out.printf("<pre>%s</pre>\n", errOut.toString());
     }
+
     out.println("</body>");
     out.println("</html>");
   }

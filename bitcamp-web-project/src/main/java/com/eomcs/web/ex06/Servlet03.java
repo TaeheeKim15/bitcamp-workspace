@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 //        @WebInitParam(name = "jdbc.url", value = "jdbc:mariadb://localhost/studydb"), //
 //        @WebInitParam(name = "jdbc.username", value = "study"), //
 //        @WebInitParam(name = "jdbc.password", value = "1111")})
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 public class Servlet03 extends HttpServlet {
 
   // @Override
@@ -25,7 +25,11 @@ public class Servlet03 extends HttpServlet {
   // //
   // // 문제는 이 메서드가 호출될 때 넘어오는 값(config)을 인스턴스 필드에 보관했다가,
   // // 나중에 getServletConfig()가 호출될 때 리턴하도록 코드를 작성해야 한다.
-  // // 이런 작업이 번거롭다.
+  // this.config = config;
+
+
+  // // 그런데 init()를 오버라이딩 할 때 마다 이렇게
+  // // config 객체를 인스턴스 필드에 저장하도록 코딩하는 것은 매우 번거롭다
   // //
   // // 이런 불편함을 없애기 위해서 GenericServlet은
   // // 미리 이 메서드에 해당 코드를 작성해 두었다.
@@ -38,7 +42,7 @@ public class Servlet03 extends HttpServlet {
   // // 이 메서드가 호출하는 다른 init()를 오버라이딩 하라!
   // //
   // //
-  // super.init(config);
+  //  super.init(config);
   // }
 
 
@@ -66,7 +70,7 @@ public class Servlet03 extends HttpServlet {
     // => 값이 바뀌더라도 소스를 변경할 필요가 없다.
     // => 보통 DD 파일(web.xml)에 둔다.
     // => 다만 이 예제에서는 애노테이션으로도 설정할 수 있다는 것을
-    // 보여주기 위해 서블릿 상단에 애노테이션으로 설정하였다.
+    //    보여주기 위해 서블릿 상단에 애노테이션으로 설정하였다.
     // => 예)
     // @WebInitParam(name = "jdbc.driver", value = "org.mariadb.jdbc.Driver")
     // => 애노테이션에 설정된 값을 꺼내기 위해서는 ServletConfig 객체가 필요하다.
