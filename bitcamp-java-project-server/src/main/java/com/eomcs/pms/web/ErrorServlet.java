@@ -23,16 +23,16 @@ public class ErrorServlet extends HttpServlet {
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
-    out.println("<title>서버 오류</title></head>");
+    out.println("<title>서버오류</title></head>");
     out.println("<body>");
-    out.println("<h1>게시물 등록</h1>");
+
+    out.println("<h1>서버 오류</h1>");
 
     Exception e = (Exception) request.getAttribute("exception");
 
     out.printf("<pre>%s</pre>\n", e.getMessage());
 
     out.println("<h3>상세 오류 내용</h3>");
-    out.printf("<pre>%s</pre>\n", e.getMessage());
 
     StringWriter errOut = new StringWriter();
     e.printStackTrace(new PrintWriter(errOut));

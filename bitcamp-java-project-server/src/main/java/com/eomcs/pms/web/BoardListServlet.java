@@ -31,6 +31,9 @@ public class BoardListServlet extends HttpServlet {
     out.println("<html>");
     out.println("<head><title>게시글목록</title></head>");
     out.println("<body>");
+
+    request.getRequestDispatcher("/header").include(request, response);
+
     try {
       out.println("<h1>게시물 목록</h1>");
 

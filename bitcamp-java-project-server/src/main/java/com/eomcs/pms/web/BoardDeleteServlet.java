@@ -18,13 +18,16 @@ public class BoardDeleteServlet extends HttpServlet {
       throws ServletException, IOException {
 
     ServletContext ctx = request.getServletContext();
-    BoardService boardService = (BoardService) ctx.getAttribute("boardService");
+    BoardService boardService =
+        (BoardService) ctx.getAttribute("boardService");
 
     try {
       int no = Integer.parseInt(request.getParameter("no"));
+
       if (boardService.delete(no) == 0) {
         throw new Exception("해당 번호의 게시글이 없습니다.");
       }
+
       response.sendRedirect("list");
 
     } catch (Exception e) {

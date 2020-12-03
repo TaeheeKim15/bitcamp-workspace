@@ -68,6 +68,8 @@ public class Servlet01 extends HttpServlet {
 
     Cookie c5 = new Cookie("name3", URLEncoder.encode("홍길동", "UTF-8"));
     // 프로토콜 예 => Set-Cookie: name3=%ED%99%8D%EA%B8%B8%EB%8F%99
+    // 어떤 웹 서버에서는 한글을 못 읽는 경우가 있다
+    // 때문에 개발자들은 한글을 보내면 깨질까봐 url 인코딩을 해서 보내는 위에 방식을 선호한다.
 
     // 쿠키를 응답 헤더에 포함시키기
     response.addCookie(c1);
