@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @WebServlet("/ex11/s1")
 @SuppressWarnings("serial")
@@ -69,10 +68,10 @@ public class Servlet01 extends HttpServlet {
     //
     // 항상 새 세션을 만들면, 응답할 때 새 세션의 아이디를 쿠키로 보낸다.
     //
-    HttpSession session = request.getSession();
+    // HttpSession session = request.getSession();
 
     // 세션에 데이터 보관하기
-    session.setAttribute("v1", "aaa");
+    //session.setAttribute("v1", "aaa");
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();

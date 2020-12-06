@@ -2,7 +2,6 @@ package com.eomcs.pms.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -32,12 +31,18 @@ public class BoardListServlet extends HttpServlet {
     out.println("<html>");
     out.println("<head><title>게시글목록</title></head>");
     out.println("<body>");
+
+    request.getRequestDispatcher("/header").include(request, response);
+
     try {
       out.println("<h1>게시물 목록</h1>");
 
-      out.println("<a href='form.html'>새 글</a>");
+      out.println("<a href='form.html'>새 글</a><br>");
 
-      List<Board> list = boardService.list();
+      String keyword = request.getParameter("keyword");
+
+      List<Board> list = boardService.list(keyword);
+
       out.println("<table border='1'>");
       out.println("<thead><tr>" // table row
           + "<th>번호</th>" // table header
@@ -48,6 +53,7 @@ public class BoardListServlet extends HttpServlet {
           + "</tr></thead>");
 
       out.println("<tbody>");
+
       for (Board board : list) {
         out.printf("<tr>"
             + "<td>%d</td>"
@@ -65,14 +71,20 @@ public class BoardListServlet extends HttpServlet {
       out.println("</tbody>");
       out.println("</table>");
 
+      out.println("<p>");
+      out.println("<form action='list' method='get'>");
+      out.printf("검색어: <input type='text' name='keyword' value='%s'>\n",
+          keyword != null ? keyword : "");
+      out.println("<button>검색</button>");
+      out.println("</form>");
+      out.println("</p>");
+
     } catch (Exception e) {
-      out.printf("<p>작업 처리 중 오류 발생! - %s</p>\n", e.getMessage());
-
-      StringWriter errOut = new StringWriter();
-      e.printStackTrace(new PrintWriter(errOut));
-
-      out.printf("<pre>%s</pre>\n", errOut.toString());
+      request.setAttribute("exception", e);
+      request.getRequestDispatcher("/error").forward(request, response);
+      return;
     }
+
     out.println("</body>");
     out.println("</html>");
   }

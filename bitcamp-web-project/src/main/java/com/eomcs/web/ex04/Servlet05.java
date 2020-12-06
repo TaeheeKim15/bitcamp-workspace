@@ -71,6 +71,8 @@ public class Servlet05 extends GenericServlet {
       photoPart.write(this.uploadDir + "/" + filename);
       out.printf("사진=%s<br>\n", filename);
       out.printf("<img src='../upload/%s'><br>\n", filename);
+      // 사진이 작다고 다운로드가 작은 건 아니다
+      // 일단 다운을 받은 다음에 사진 크기를 줄인다
     }
     out.println("</body></html>");
   }

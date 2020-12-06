@@ -58,6 +58,8 @@ public class Servlet06 extends GenericServlet {
     if (genre6 != null) {
       out.println("SF");
     }
+
+    // value 값이 on이냐 아니냐 구분하는 것이 아니라 null이냐 아니냐로 체크 여부를 구분한다.
   }
 }
 
