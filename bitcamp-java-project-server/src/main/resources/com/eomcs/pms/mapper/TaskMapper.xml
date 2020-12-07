@@ -14,7 +14,8 @@
     <result column="project_title"  property="projectTitle"/>
     
     <association property="owner" javaType="member">
-      <id column="pno"         property="pno"/>
+      <id column="owner_no"         property="no"/>
+      <result column="owner_name"   property="name"/>
     </association>
   </resultMap>
   

@@ -2,11 +2,10 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<head>
-<title>게시글목록</title>
-</head>
+<head><title>게시글목록</title></head>
 <body>
 
 <jsp:include page="/header.jsp"></jsp:include>
@@ -14,21 +13,18 @@
 <h1>게시물 목록(JSP)</h1>
 <a href='form.html'>새 글</a><br>
 
-<%List<Board> list = (List<Board>) request.getAttribute("list"); %>
-
 <table border='1'>
 <thead><tr><th>번호</th><th>제목</th><th>작성자</th><th>등록일</th><th>조회수</th></tr></thead>
 <tbody>
-<%
-for (Board b : list) { %>
+<c:forEach items="${list}" var="b">
 <tr>
-<td><%=b.getNo()%></td>
-<td><a href='detail?no=<%=b.getNo()%>'><%=b.getTitle()%></a></td>
-<td><%=b.getWriter().getName()%></td>
-<td><%=b.getRegisteredDate()%></td>
-<td><%=b.getViewCount()%></td>
+  <td>${b.no}</td>
+ <td><a href='detail?no${b.no}'>${b.title}</a></td>
+  <td>${b.writer.name}</td>
+  <td>${b.registerdDate}</td>
+  <td>${b.viewCount}</td>
 </tr>
-<% } %>
+</c:forEach> 
 </tbody>
 </table>
 <p>
@@ -39,3 +35,4 @@ for (Board b : list) { %>
 </p>
 </body>
 </html>
+    
