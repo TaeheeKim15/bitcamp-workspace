@@ -8,7 +8,7 @@
 
 <jsp:include page="/header.jsp"></jsp:include>
 
-<h1>회원 상세 정보(JSP)</h1>
+<h1>회원 상세 정보(JSP+EL+JSTL)</h1>
 
 <form action='updatePhoto' method='post' enctype='multipart/form-data'>
 <input type='hidden' name='no' value='${member.no}'><br>
@@ -29,6 +29,5 @@
 <a href='delete?no=${member.no}'>[삭제]</a>
  <a href='list'>[목록]</a> 
 </form>
-
 </body>
 </html>
