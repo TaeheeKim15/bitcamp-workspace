@@ -199,4 +199,18 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+*.exe
+node_modules/
+temp/
+Debug/
+Release/
+html-exam/
+
+
+
+
+
+
+
+
 # End of https://www.toptal.com/developers/gitignore/api/java,linux,macos,windows,gradle,eclipse,java-web,visualstudiocode

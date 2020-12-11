@@ -41,7 +41,7 @@
 <hr>
 작업:<br>
 
-<jsp:include page="/task/list?no=${project.no}"></jsp:include>
+<jsp:include page="/task/list.jsp"></jsp:include>
  
 </body>
 </html>
