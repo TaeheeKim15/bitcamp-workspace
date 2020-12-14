@@ -1,8 +1,7 @@
 package com.eomcs.pms.web;
 
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,24 +15,26 @@ import net.coobird.thumbnailator.name.Rename;
 @Controller
 public class MemberUpdatePhotoController {
 
+  ServletContext servletContext;
   MemberService memberService;
 
-  public MemberUpdatePhotoController(MemberService memberService) {
+  public MemberUpdatePhotoController(ServletContext servletContext, MemberService memberService) {
+    this.servletContext = servletContext;
     this.memberService = memberService;
+
   }
 
   @RequestMapping("/member/updatePhoto")
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  public String execute(int no, Part photoFile) throws Exception {
 
     Member member = new Member();
-    member.setNo(Integer.parseInt(request.getParameter("no")));
+    member.setNo(no);
 
     // 회원 사진 파일 저장
-    Part photoPart = request.getPart("photo");
-    if (photoPart.getSize() > 0) {
+    if (photoFile.getSize() > 0) {
       String filename = UUID.randomUUID().toString();
-      String saveFilePath = request.getServletContext().getRealPath("/upload/" + filename);
-      photoPart.write(saveFilePath);
+      String saveFilePath = servletContext.getRealPath("/upload/" + filename);
+      photoFile.write(saveFilePath);
       member.setPhoto(filename);
 
       // 회원 사진의 썸네일 이미지 파일 생성하기

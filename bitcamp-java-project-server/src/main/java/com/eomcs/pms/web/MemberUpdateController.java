@@ -1,31 +1,19 @@
 package com.eomcs.pms.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.eomcs.pms.domain.Member;
-import com.eomcs.pms.service.MemberService;
 
 @Controller
 public class MemberUpdateController {
 
-  MemberService memberService;
+  @Autowired ServletContext servletContext;
 
-  public MemberUpdateController(MemberService memberService) {
-    this.memberService = memberService;
-  }
-
+  // 파라미터 이름과 프라퍼티 이름이 같을 때 프론트 컨트롤러가 꼽아준다
   @RequestMapping("/member/update")
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-    Member member = new Member();
-    member.setNo(Integer.parseInt(request.getParameter("no")));
-    member.setName(request.getParameter("name"));
-    member.setEmail(request.getParameter("email"));
-    member.setPassword(request.getParameter("password"));
-    member.setTel(request.getParameter("tel"));
-
+  public String execute(Member member) throws Exception {
     memberService.update(member);
     return "redirect:list";
   }

@@ -1,8 +1,7 @@
 package com.eomcs.pms.web;
 
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,28 +15,27 @@ import net.coobird.thumbnailator.name.Rename;
 @Controller
 public class MemberAddController {
 
+  ServletContext servletContext; // 메서드의 파라미터로 못 받는다.
   MemberService memberService;
 
-  public MemberAddController(MemberService memberService) {
+  public MemberAddController(
+      MemberService memberService,
+      ServletContext servletContext // 이렇게 생성자에서 받을 수 있다.
+      ) {
     this.memberService = memberService;
+    this.servletContext = servletContext;
   }
 
+
+  // 멀티파트 파일은 따로 받자
+  // 여기에 있는 이름과 멀티파트 파일 이름을 같게하면 안된다.
   @RequestMapping("/member/add")
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-    Member member = new Member();
-    member.setName(request.getParameter("name"));
-    member.setEmail(request.getParameter("email"));
-    member.setPassword(request.getParameter("password"));
-    member.setTel(request.getParameter("tel"));
-
-    Part photoPart = request.getPart("photo");
+  public String execute(Member member, Part photoFile) throws Exception {
 
     String filename = UUID.randomUUID().toString();
-    String saveFilePath = request.getServletContext().getRealPath("/upload/" + filename);
+    String saveFilePath = servletContext.getRealPath("/upload/" + filename);
 
-    photoPart.write(saveFilePath);
-
+    photoFile.write(saveFilePath);
     member.setPhoto(filename);
 
     generatePhotoThumbnail(saveFilePath);
