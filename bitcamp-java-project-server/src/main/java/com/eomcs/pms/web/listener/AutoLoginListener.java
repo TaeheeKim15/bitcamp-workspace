@@ -15,10 +15,7 @@ public class AutoLoginListener implements ServletRequestListener {
     HttpSession session = ((HttpServletRequest)sre.getServletRequest()).getSession();
 
     if (session.getAttribute("loginUser") == null) {
-
-
-      Member member = new Member().setNo(1).setName("aaa").setEmail("aaa@naver.com");
-
+      Member member = new Member().setNo(1).setName("aaa").setEmail("aaa@test.com");
       session.setAttribute("loginUser", member);
     }
   }
