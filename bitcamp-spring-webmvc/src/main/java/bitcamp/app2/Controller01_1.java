@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Controller01_1 {
 
   // 테스트:
-  // http://localhost:8080/java-spring-webmvc/app2/c01_1/h1
+  // http://localhost:9999/eomcs-spring-webmvc/app2/c01_1/h1
   @GetMapping("h1")
   // @ResponseBody // 뷰 이름을 리턴 할 때는 이 애노테이션을 붙이면 안된다.
   public String handler1(Model model) {
@@ -32,7 +32,7 @@ public class Controller01_1 {
   }
 
   // 테스트:
-  // http://localhost:8080/java-spring-webmvc/app2/c01_1/h2
+  // http://localhost:9999/eomcs-spring-webmvc/app2/c01_1/h2
   @GetMapping("h2")
   public void handler2(Model model) {
     model.addAttribute("name", "홍길동2");
@@ -50,7 +50,7 @@ public class Controller01_1 {
   }
 
   // 테스트:
-  // http://localhost:8080/java-spring-webmvc/app2/c01_1/h3
+  // http://localhost:9999/eomcs-spring-webmvc/app2/c01_1/h3
   @GetMapping("h3")
   public String handler3(Map<String, Object> map) {
 

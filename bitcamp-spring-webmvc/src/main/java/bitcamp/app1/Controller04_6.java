@@ -21,9 +21,9 @@ public class Controller04_6 {
   // http://.../c04_6/h1
   @GetMapping("h1")
   @ResponseBody
-  public void handler1(//
-      PrintWriter out, //
-      @RequestHeader("Accept") String accept, //
+  public void handler1(
+      PrintWriter out,
+      @RequestHeader("Accept") String accept,
       @RequestHeader("User-Agent") String userAgent) {
 
     out.printf("Accept=%s\n", accept);

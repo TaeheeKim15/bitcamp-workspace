@@ -3,7 +3,6 @@ package com.eomcs.basic.ex07;
 public class Exam0210 {
   public static void main(String[] args) {
 
-
     m1();
     // m1(100)
     //int r = m1();
@@ -43,15 +42,15 @@ public class Exam0210 {
     m8("홍길동");
     //int aver= m6("홍길동");
 
-     m10(new int[] {100, 90, 80}, new String[] {"국어", "영어", "수학"}, "홍길동");
+    m10(new int[] {100, 90, 80}, new String[] {"국어", "영어", "수학"}, "홍길동");
 
 
-     int sum = 0;
-     sum = plus(2,3);
-     sum = plus(sum, 7);
-     sum = plus(sum, 4);
+    int sum = 0;
+    sum = plus(2,3);
+    sum = plus(sum, 7);
+    sum = plus(sum, 4);
 
-     System.out.println(plus(plus(sum, 7), 4));
+    System.out.println(plus(plus(sum, 7), 4));
 
   }
 
@@ -131,16 +130,16 @@ public class Exam0210 {
       return;
     }
 
-      System.out.println(name + "님 점수!");
-      for (int i = 0; i < scores.length; i++) {
-        System.out.printf("%s = %d 점\n", titles[i], scores[i]);
-      }
+    System.out.println(name + "님 점수!");
+    for (int i = 0; i < scores.length; i++) {
+      System.out.printf("%s = %d 점\n", titles[i], scores[i]);
+    }
 
-      }
+  }
   static int plus(int a, int b) {
     return a + b;
-    }
   }
+}
 
 
 

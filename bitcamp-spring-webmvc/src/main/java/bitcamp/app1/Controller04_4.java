@@ -25,13 +25,13 @@ public class Controller04_4 {
   // http://.../c04_4/h1?model=sonata&capacity=5&auto=true&createdDate=2019-4-19
   @GetMapping("h1")
   @ResponseBody
-  public void handler1(//
-      PrintWriter out, //
-      String model, //
-      @RequestParam(defaultValue = "0") int capacity, // String ===> int : Integer.parseInt(String)
+  public void handler1(
+      PrintWriter out,
+      String model,
+      @RequestParam(defaultValue = "5") int capacity, // String ===> int : Integer.parseInt(String)
       boolean auto, // String ===> boolean : Boolean.parseBoolean(String)
       Date createdDate // 프로퍼티 에디터를 설정하지 않으면 변환 오류 발생
-  ) {
+      ) {
 
     out.printf("model=%s\n", model);
     out.printf("capacity=%s\n", capacity);
@@ -65,52 +65,58 @@ public class Controller04_4 {
 
 
 
-  // 프로퍼티 에디터를 프론트 컨트롤러에게 적용하기
+  // 이 페이지 컨트롤러에서 사용할 프로퍼티 에디터 설정하는 방법
   // => 프론트 컨트롤러는 request handler를 호출하기 전에
-  // 넘겨줄 아규먼트 값을 준비해야 한다.
-  // 각 아규먼트 값을 준비할 때
-  // @InitBinder가 표시된 메서드(request handler를 실행할 때 사용할 도구를 준비하는 메서드)
-  // 를 호출하여 프로퍼티 에디터(변환기)를 준비시킨다.
-  // 그리고 이 준비된 값 변환기(프로퍼티 에디터)를 이용하여 파라미터 값을
-  // request handler의 아규먼트가 원하는 타입의 값을 바꾼다.
-  // request handler의 아규먼트 개수 만큼 이 메서드를 호출한다.
+  //    그 메서드가 원하는 아규먼트 값을 준비해야 한다.
+  //    각 아규먼트 값을 준비할 때
+  //    @InitBinder가 표시된 메서드(request handler를 실행할 때 사용할 도구를 준비하는 메서드)
+  //    를 호출하여 프로퍼티 에디터(변환기)를 준비시킨다.
+  //    그리고 이 준비된 값 변환기(프로퍼티 에디터)를 이용하여 파라미터 값을
+  //    request handler의 아규먼트가 원하는 타입의 값을 바꾼다.
+  //    request handler의 아규먼트 개수 만큼 이 메서드를 호출한다.
   // => 따라서 프로퍼티 에디터를 적용하기에
-  // @InitBinder가 표시된 메서드가 적절한 지점이다.
-  // 즉 이 메서드에 프로퍼티 에디터를 등록하는 코드를 둔다.
+  //    @InitBinder가 표시된 메서드가 적절한 지점이다.
+  //    즉 이 메서드에 프로퍼티 에디터를 등록하는 코드를 둔다.
   //
+
   @InitBinder
+  // => 메서드 이름은 마음대로.
+  // => 작업하는데 필요한 값이 있다면 파라미터로 선언하라.
   public void initBinder(WebDataBinder binder) {
     System.out.println("Controller04_4.initBinder()...");
     // 프로퍼티 에디터를 등록하려면 그 일을 수행할 객체(WebDataBinder)가 필요하다.
     // request handler 처럼 아규먼트를 선언하여
     // 프론트 컨트롤러에게 달라고 요청하라.
 
-    // String ===> Date 프로퍼티 에디터 준비
+    //String ===> java.util.Date 프로퍼티 에디터 준비
     DatePropertyEditor propEditor = new DatePropertyEditor();
 
     // WebDataBinder에 프로퍼티 에디터 등록하기
-    binder.registerCustomEditor(java.util.Date.class, // String을 Date 타입으로 바꾸는 에디터임을 지정한다.
+    binder.registerCustomEditor(
+        java.util.Date.class, // String을 Date 타입으로 바꾸는 에디터임을 지정한다.
         propEditor // 바꿔주는 일을 하는 프로퍼티 에디터를 등록한다.
-    );
+        );
+
 
     // WebDataBinder에 프로퍼티 에디터 등록하기
-    binder.registerCustomEditor(Car.class, // String을 Car 타입으로 바꾸는 에디터임을 지정한다.
+    binder.registerCustomEditor(
+        Car.class, // String을 Car 타입으로 바꾸는 에디터임을 지정한다.
         new CarPropertyEditor() // 바꿔주는 일을 하는 프로퍼티 에디터를 등록한다.
-    );
+        );
 
     // WebDataBinder에 프로퍼티 에디터 등록하기
     binder.registerCustomEditor(Engine.class, // String을 Engine 타입으로 바꾸는 에디터임을 지정한다.
         new EnginePropertyEditor() // 바꿔주는 일을 하는 프로퍼티 에디터를 등록한다.
-    );
+        );
   }
 
   // PropertyEditor 만들기
   // => 문자열을 특정 타입의 프로퍼터의 값으로 변환시킬 때 사용하는 에디터이다.
   // => java.beans.PropertyEditor 인터페이스를 구현해야 한다.
   // => PropertyEditor를 직접 구현하면 너무 많은 메서드를 오버라이딩 해야 하기 때문에
-  // 자바에서는 도우미 클래스인 PropertyEditorSupport 클래스를 제공한다.
-  // 이 클래스는 PropertyEditor를 미리 구현하였다.
-  // 따라서 이 클래스를 상속 받은 것 더 낫다.
+  //    자바에서는 도우미 클래스인 PropertyEditorSupport 클래스를 제공한다.
+  //    이 클래스는 PropertyEditor를 미리 구현하였다.
+  //    따라서 이 클래스를 상속 받은 것 더 낫다.
   class DatePropertyEditor extends PropertyEditorSupport {
 
     @Override

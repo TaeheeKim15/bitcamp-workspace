@@ -26,24 +26,24 @@ public class Controller04_8 {
 
   // 클라이언트가 멀티파트 형식으로 전송한 데이터를 꺼내기
   // => Servlet API에서 제공하는 Part를 사용하거나
-  // 또는 Spring에서 제공하는 MultipartFile 타입의 아규먼트를 선언하면 된다.
+  //    또는 Spring에서 제공하는 MultipartFile 타입의 아규먼트를 선언하면 된다.
   //
   // 주의!
   // => DispatcherServlet을 web.xml을 통해 배치했다면,
-  // <multipart-config/> 태그를 추가해야 한다.
+  //    <multipart-config/> 태그를 추가해야 한다.
   // => WebApplicationInitializer를 통해 DispatcherServlet을 배치했다면,
-  // App1WebApplicationInitializer 클래스를 참고하라!
+  //    App1WebApplicationInitializer 클래스를 참고하라!
   //
 
   // 테스트:
   // http://.../html/app1/c04_8.html
   @PostMapping(value = "h1", produces = "text/html;charset=UTF-8")
   @ResponseBody
-  public String handler1(//
-      String name, //
-      int age, //
+  public String handler1(
+      String name,
+      int age,
       Part photo // Servlet API의 객체
-  ) throws Exception {
+      ) throws Exception {
 
     String filename = null;
     if (photo.getSize() > 0) {
@@ -72,7 +72,7 @@ public class Controller04_8 {
       String name, //
       @RequestParam(defaultValue = "0") int age, //
       MultipartFile photo // Spring API의 객체
-  ) throws Exception {
+      ) throws Exception {
 
     String filename = null;
     if (!photo.isEmpty()) {
@@ -99,7 +99,7 @@ public class Controller04_8 {
       int age, //
       // 같은 이름으로 전송된 여러 개의 파일은 배열로 받으면 된다.
       MultipartFile[] photo //
-  ) throws Exception {
+      ) throws Exception {
 
     StringWriter out0 = new StringWriter();
     PrintWriter out = new PrintWriter(out0);
