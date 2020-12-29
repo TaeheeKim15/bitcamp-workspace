@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import com.eomcs.pms.dao.ProjectDao;
 import com.eomcs.pms.dao.TaskDao;
 import com.eomcs.pms.domain.Member;
@@ -15,56 +18,76 @@ public class DefaultProjectService implements ProjectService {
 
   TaskDao taskDao;
   ProjectDao projectDao;
+  TransactionTemplate transactionTemplate;
 
   public DefaultProjectService(
       TaskDao taskDao,
-      ProjectDao projectDao) {
+      ProjectDao projectDao,
+      TransactionTemplate transactionTemplate) {
 
     this.projectDao = projectDao;
     this.taskDao = taskDao;
+    this.transactionTemplate = transactionTemplate;
   }
 
   @Override
   public int delete(int no) throws Exception {
-    try {
-      /*
-      factoryProxy.startTransaction();
-      taskDao.deleteByProjectNo(no);
-      projectDao.deleteMembers(no);
-      //if (100 == 100) throw new Exception("일부러 예외 발생!");
-      int count = projectDao.delete(no);
 
-      factoryProxy.commit();
-       */
-
-      return projectDao.inactive(no);
-
-    } catch (Exception e) {
-      //factoryProxy.rollback();
-      throw e; // 서비스 객체에서 발생한 예외는 호출자에게 전달한다.
-
-    } finally {
-      //factoryProxy.endTransaction();
+    // 트랜잭션으로 다뤄야 할 코드를 TransactionCallback 구현체에 담는다
+    class DeleteWork implements TransactionCallback<Integer> {
+      @Override
+      public Integer doInTransaction(TransactionStatus status) {
+        try {
+          taskDao.deleteByProjectNo(no);
+          projectDao.deleteMembers(no);
+          return projectDao.delete(no);
+        } catch (Exception e) {
+          status.setRollbackOnly();
+          return 0;
+        }
+      }
     }
+
+    transactionTemplate.execute(new DeleteWork());
+
+    // 프로젝트를 삭제:
+    //
+    // 1) 프로젝트 데이터를 삭제하기
+    // => 이 방식의 문제는 사용자가 자신의 프로젝트 수행 내역을 조회할 때 
+    //    삭제된 프로젝트는 조회할 수 없다는 것이다.
+    // => 그래서 실무에서는 실제 데이터를 지우지 않고 감추는 방식을 사용한다.
+    //    그래야 사용자가 프로젝트 내역을 조회할 때 모든 정보를 출력할 수 있다.
+    //      taskDao.deleteByProjectNo(no);
+    //      projectDao.deleteMembers(no);
+    //      int count = projectDao.delete(no);
+    //
+    // 정상적으로 삭제 작업이수행되었다면 실제 테이블에 반영하라고 서버에 명령한다.
+    // txManager.commit(status);
+
+    // 2) 프로젝트를 비활성 상태로 바꾸기
+    // => 이  경우 업데이트가 한 번만 수행되기 때문에 트랜잭션으로 다룰 필요가 없다
+    return projectDao.inactive(no);
   }
 
   @Override
   public int add(Project project) throws Exception {
-    try {
-      projectDao.insert(project);
 
-      //if (100 == 100) throw new Exception("일부러 예외 발생!");
+    transactionTemplate.execute(new TransactionCallback<Integer>() {
 
-      projectDao.insertMembers(project);
+      @Override
+      public Integer doInTransaction(TransactionStatus status) {
+        try {
+          projectDao.insert(project);
+          //if (100 == 100) throw new Exception("일부러 예외 발생!");
+          projectDao.insertMembers(project);
+          return 1;
 
-      return 1;
-
-    } catch (Exception e) {
-      throw e;
-
-    } finally {
-
-    }
+        } catch (Exception e) {
+          status.setRollbackOnly();
+          return 0;
+        } 
+      }
+    });
   }
 
   @Override
@@ -103,45 +126,39 @@ public class DefaultProjectService implements ProjectService {
 
   @Override
   public int update(Project project) throws Exception {
-    // 프로젝트 정보를 변경한다.
-    int count = projectDao.update(project);
+    return transactionTemplate.execute(status -> {
+      try {
+        //1) 프로젝트 정보 변경
+        int count = projectDao.update(project);
+        Project oldProject = projectDao.findByNo(project.getNo());
+        //2) 기존 멤버 비활성화
+        if (oldProject.getMembers().size() > 0) {
+          projectDao.updateInactiveMembers(oldProject);
+        }
+        // 3) 선택한 멤버 활성화
+        if (project.getMembers().size() > 0) {
+          projectDao.updateActiveMembers(project);
+        }
+        List<Member> addMembers = minusMembers(
+            project.getMembers(),
+            oldProject.getMembers());
 
-    // 프로젝트 멤버를 변경한다.
-    // 1) 기존 멤버를 비활성화시킨다.
-    //    삭제하지 않고 왜?
-    //    - 삭제하면 그 회원이 했던 작업도 모두 삭제되기 때문이다.
-    //    - 그러면 프로젝트에서 수행한 작업 기록이 사라진다.
-    //
-    //    - 이전 프로젝트 정보(멤버 목록 포함)를 가져온다.
-    Project oldProject = projectDao.findByNo(project.getNo());
+        if (addMembers.size() > 0) {
+          // 파라미터로 받은 프로젝트 객체를 변경하지 않기 위해
+          // 새 프로젝트 객체를 만들어 사용한다.
+          // => 파라미터 값은 가능한 변경하지 말라!
+          Project updateMembersProject = new Project();
+          updateMembersProject.setNo(project.getNo());
+          updateMembersProject.setMembers(addMembers);
 
-    //    - 이전 프로젝트의 전체 멤버를 비활성 상태로 만든다.
-    if (oldProject.getMembers().size() > 0) {
-      projectDao.updateInactiveMembers(oldProject);
-    }
-
-    // 2) 변경한 프로젝트의 멤버를 활성 상태로 만든다.
-    if (project.getMembers().size() > 0) {
-      projectDao.updateActiveMembers(project);
-    }
-
-    // 3) 프로젝트에 추가한 멤버를 등록한다.
-    List<Member> addMembers = minusMembers(
-        project.getMembers(),
-        oldProject.getMembers());
-
-    if (addMembers.size() > 0) {
-      // 파라미터로 받은 프로젝트 객체를 변경하지 않기 위해
-      // 새 프로젝트 객체를 만들어 사용한다.
-      // => 파라미터 값은 가능한 변경하지 말라!
-      Project updateMembersProject = new Project();
-      updateMembersProject.setNo(project.getNo());
-      updateMembersProject.setMembers(addMembers);
-
-      projectDao.insertMembers(updateMembersProject);
-    }
-
-    return count;
+          projectDao.insertMembers(updateMembersProject);
+        }
+        return count;
+      } catch (Exception e) {
+        // RuntimeException이 뜨면 
+        throw new RuntimeException(e);
+      }
+    });
   }
 
   private List<Member> minusMembers(List<Member> g1, List<Member> g2) {
